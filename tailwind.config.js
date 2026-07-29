@@ -11,7 +11,11 @@ export default {
         teal: '#1CA9A0',
         dark: '#262626',
       },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
     },
   },
   plugins: [],
 }
+
