@@ -1,0 +1,238 @@
+import { 
+  SparklesIcon, 
+  BriefcaseIcon, 
+  AcademicCapIcon, 
+  HeartIcon, 
+  CurrencyDollarIcon,
+  ArrowRightIcon
+} from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+type DecisionDomain = 'karier' | 'pendidikan' | 'relasi' | 'finansial';
+
+interface DomainOption {
+  id: DecisionDomain;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  examples: string[];
+  color: string;
+}
+
+const domains: DomainOption[] = [
+  {
+    id: 'karier',
+    title: 'Karier',
+    description: 'Keputusan seputar pekerjaan, promosi, dan pengembangan karier',
+    icon: <BriefcaseIcon className="w-12 h-12" />,
+    examples: [
+      'Pindah kerja atau bertahan?',
+      'Ambil promosi atau tidak?',
+      'Ganti jalur karier?',
+      'Negosiasi gaji'
+    ],
+    color: 'blue'
+  },
+  {
+    id: 'pendidikan',
+    title: 'Pendidikan',
+    description: 'Keputusan terkait studi, jurusan, dan pengembangan skill',
+    icon: <AcademicCapIcon className="w-12 h-12" />,
+    examples: [
+      'Lanjut S2 atau kerja dulu?',
+      'Pilih jurusan kuliah',
+      'Ambil beasiswa atau tidak?',
+      'Ikut kursus/bootcamp'
+    ],
+    color: 'teal'
+  },
+  {
+    id: 'relasi',
+    title: 'Relasi',
+    description: 'Keputusan tentang hubungan personal dan interpersonal',
+    icon: <HeartIcon className="w-12 h-12" />,
+    examples: [
+      'Lanjutkan hubungan atau tidak?',
+      'Pindah kota meninggalkan keluarga?',
+      'Atasi konflik dengan teman',
+      'Komitmen jangka panjang'
+    ],
+    color: 'pink'
+  },
+  {
+    id: 'finansial',
+    title: 'Finansial',
+    description: 'Keputusan seputar keuangan, investasi, dan pengeluaran besar',
+    icon: <CurrencyDollarIcon className="w-12 h-12" />,
+    examples: [
+      'Beli rumah atau sewa?',
+      'Investasi di mana?',
+      'Ambil kredit atau tabung dulu?',
+      'Alokasi dana darurat'
+    ],
+    color: 'green'
+  }
+];
+
+export default function DomainSelectionPage() {
+  const navigate = useNavigate();
+  const [selectedDomain, setSelectedDomain] = useState<DecisionDomain | null>(null);
+
+  const handleSelectDomain = (domain: DecisionDomain) => {
+    setSelectedDomain(domain);
+  };
+
+  const handleContinue = () => {
+    if (selectedDomain) {
+      navigate('/chat');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+      <nav className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center gap-2">
+            <SparklesIcon className="w-8 h-8 text-teal" />
+            <h1 className="text-2xl font-bold text-navy">MANTAP</h1>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-teal bg-opacity-10 text-teal px-4 py-2 rounded-full text-sm font-semibold mb-4">
+            <SparklesIcon className="w-4 h-4" />
+            Langkah 2 dari 4
+          </div>
+          <h2 className="text-4xl font-bold text-navy mb-4">
+            Pilih Domain Keputusan
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Pilih kategori yang paling sesuai dengan keputusan Anda. AI akan menyesuaikan 
+            pertanyaan dan framework berpikir secara spesifik untuk domain yang dipilih.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {domains.map((domain) => (
+            <DomainCard
+              key={domain.id}
+              domain={domain}
+              isSelected={selectedDomain === domain.id}
+              onSelect={() => handleSelectDomain(domain.id)}
+            />
+          ))}
+        </div>
+
+        {selectedDomain && (
+          <div className="flex justify-center">
+            <button
+              onClick={handleContinue}
+              className="bg-teal text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-opacity-90 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg"
+            >
+              Mulai Konsultasi
+              <ArrowRightIcon className="w-6 h-6" />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface DomainCardProps {
+  domain: DomainOption;
+  isSelected: boolean;
+  onSelect: () => void;
+}
+
+function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
+  const getColorClasses = () => {
+    switch (domain.color) {
+      case 'blue':
+        return {
+          border: 'border-blue',
+          bg: 'bg-blue',
+          text: 'text-blue',
+          icon: 'text-blue',
+          ring: 'ring-blue-500'
+        };
+      case 'teal':
+        return {
+          border: 'border-teal',
+          bg: 'bg-teal',
+          text: 'text-teal',
+          icon: 'text-teal',
+          ring: 'ring-teal-500'
+        };
+      case 'pink':
+        return {
+          border: 'border-pink-500',
+          bg: 'bg-pink-500',
+          text: 'text-pink-500',
+          icon: 'text-pink-500',
+          ring: 'ring-pink-500'
+        };
+      case 'green':
+        return {
+          border: 'border-green-500',
+          bg: 'bg-green-500',
+          text: 'text-green-500',
+          icon: 'text-green-500',
+          ring: 'ring-green-500'
+        };
+      default:
+        return {
+          border: 'border-gray-300',
+          bg: 'bg-gray-500',
+          text: 'text-gray-500',
+          icon: 'text-gray-500',
+          ring: 'ring-gray-500'
+        };
+    }
+  };
+
+  const colors = getColorClasses();
+
+  return (
+    <button
+      onClick={onSelect}
+      className={`bg-white rounded-xl p-6 text-left transition-all transform hover:scale-[1.02] hover:shadow-xl border-2 ${
+        isSelected 
+          ? `${colors.border} shadow-lg ring-4 ring-opacity-20 ${colors.ring}` 
+          : 'border-gray-200 hover:border-gray-300'
+      }`}
+    >
+      <div className="flex items-start gap-4 mb-4">
+        <div className={`${colors.icon} flex-shrink-0`}>
+          {domain.icon}
+        </div>
+        <div className="flex-1">
+          <h3 className="text-2xl font-bold text-navy mb-2">{domain.title}</h3>
+          <p className="text-gray-600 text-sm">{domain.description}</p>
+        </div>
+        {isSelected && (
+          <div className={`${colors.bg} text-white rounded-full p-2 flex-shrink-0`}>
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-2 mt-4 pt-4 border-t border-gray-100">
+        <p className={`text-xs font-bold ${colors.text} mb-3 uppercase tracking-wide`}>Contoh keputusan:</p>
+        <ul className="space-y-2">
+          {domain.examples.map((example, idx) => (
+            <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+              <span className={`${colors.text} font-bold flex-shrink-0`}>•</span>
+              <span>{example}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </button>
+  );
+}
