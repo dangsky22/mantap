@@ -1,7 +1,9 @@
-import { DecisionDomain, Message } from '../types';
+import { DecisionDomain, Message } from "../types";
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+// Model lama "gemini-pro" udah shutdown (404). Pakai alias -latest biar auto-update.
+const GEMINI_MODEL = "gemini-flash-lite-latest";
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export interface GeminiResponse {
   response: string;
@@ -11,28 +13,27 @@ export interface GeminiResponse {
 export async function sendMessageToGemini(
   messages: Message[],
   domain: DecisionDomain,
-  userContext?: string
+  userContext?: string,
 ): Promise<GeminiResponse> {
-  const systemPrompt = getSystemPrompt(domain);
-  
-  const conversationHistory = messages.map(msg => ({
-    role: msg.role === 'user' ? 'user' : 'model',
-    parts: [{ text: msg.content }]
+  const systemPrompt =
+    getSystemPrompt(domain) +
+    (userContext ? `\n\nKonteks pengguna: ${userContext}` : "");
+
+  const conversationHistory = messages.map((msg) => ({
+    role: msg.role === "user" ? "user" : "model",
+    parts: [{ text: msg.content }],
   }));
 
   const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: systemPrompt + (userContext ? `\n\nKonteks pengguna: ${userContext}` : '') }]
-        },
-        ...conversationHistory
-      ],
+      // systemInstruction dipisah dari contents, bukan disisipin sebagai "user" turn.
+      // Sebelumnya ini bisa bikin dua giliran "user" beruntun kalau history dimulai dari user.
+      systemInstruction: {
+        parts: [{ text: systemPrompt }],
+      },
+      contents: conversationHistory,
       generationConfig: {
         temperature: 0.7,
         topK: 40,
@@ -41,23 +42,54 @@ export async function sendMessageToGemini(
       },
       safetySettings: [
         {
-          category: 'HARM_CATEGORY_HARASSMENT',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE'
+          category: "HARM_CATEGORY_HARASSMENT",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
         },
         {
-          category: 'HARM_CATEGORY_HATE_SPEECH',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-        }
-      ]
-    })
+          category: "HARM_CATEGORY_HATE_SPEECH",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+        {
+          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+        {
+          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+      ],
+    }),
   });
 
+  // Sebelumnya gak ada cek response.ok — kalau key salah/quota habis,
+  // error dari Google (biasanya JSON { error: {...} }) bakal ke-silent-swallow
+  // dan user cuma dapet "Maaf, saya tidak bisa merespons".
+  if (!response.ok) {
+    const errBody = await response.text();
+    console.error("Gemini API error:", response.status, errBody);
+    throw new Error(
+      `Gemini API error (${response.status}). Cek console buat detail.`,
+    );
+  }
+
   const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Maaf, saya tidak bisa merespons saat ini.';
+  const candidate = data.candidates?.[0];
+
+  // Kalau kena safety filter, finishReason biasanya "SAFETY" dan parts bisa kosong.
+  if (candidate?.finishReason === "SAFETY") {
+    return {
+      response:
+        "Maaf, respons diblokir oleh filter keamanan. Coba ubah pertanyaanmu.",
+    };
+  }
+
+  const text =
+    candidate?.content?.parts?.[0]?.text ||
+    "Maaf, saya tidak bisa merespons saat ini.";
 
   return {
     response: text,
-    explanation: extractExplanation(text)
+    explanation: extractExplanation(text),
   };
 }
 
@@ -72,10 +104,14 @@ Prinsip utama:
 - Gunakan bahasa Indonesia yang natural dan empatis`;
 
   const domainSpecific = {
-    karier: '\n\nFokus domain: Keputusan karier (pindah kerja, promosi, perubahan jalur karier). Pertimbangkan: pengembangan skill, work-life balance, kompensasi, nilai & kultur perusahaan, dampak jangka panjang terhadap karier.',
-    pendidikan: '\n\nFokus domain: Keputusan pendidikan (lanjut kuliah, pilih jurusan, beasiswa, kursus). Pertimbangkan: minat & bakat, prospek karier, biaya, durasi, reputasi institusi.',
-    relasi: '\n\nFokus domain: Keputusan relasi (hubungan personal, konflik, komitmen). Pertimbangkan: nilai pribadi, komunikasi, batasan sehat, dampak emosional jangka panjang.',
-    finansial: '\n\nFokus domain: Keputusan finansial (investasi, pengeluaran besar, tabungan). Pertimbangkan: tujuan keuangan, risiko, likuiditas, time horizon, dampak terhadap stabilitas finansial.'
+    karier:
+      "\n\nFokus domain: Keputusan karier (pindah kerja, promosi, perubahan jalur karier). Pertimbangkan: pengembangan skill, work-life balance, kompensasi, nilai & kultur perusahaan, dampak jangka panjang terhadap karier.",
+    pendidikan:
+      "\n\nFokus domain: Keputusan pendidikan (lanjut kuliah, pilih jurusan, beasiswa, kursus). Pertimbangkan: minat & bakat, prospek karier, biaya, durasi, reputasi institusi.",
+    relasi:
+      "\n\nFokus domain: Keputusan relasi (hubungan personal, konflik, komitmen). Pertimbangkan: nilai pribadi, komunikasi, batasan sehat, dampak emosional jangka panjang.",
+    finansial:
+      "\n\nFokus domain: Keputusan finansial (investasi, pengeluaran besar, tabungan). Pertimbangkan: tujuan keuangan, risiko, likuiditas, time horizon, dampak terhadap stabilitas finansial.",
   };
 
   return basePrompt + domainSpecific[domain];
