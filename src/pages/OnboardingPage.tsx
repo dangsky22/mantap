@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SparklesIcon, ArrowRightIcon, UserIcon, CalendarIcon, DocumentTextIcon, FlagIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
+import { useAuth } from '../hooks/useAuth';
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
+  const { updateUserData, userData } = useAuth();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     nama: '',
@@ -16,6 +18,10 @@ export default function OnboardingPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (userData?.onboardingCompleted) navigate('/dashboard', { replace: true });
+  }, [navigate, userData?.onboardingCompleted]);
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -70,36 +76,44 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Onboarding completed:', formData);
-    navigate('/select-domain');
+  const handleSubmit = async () => {
+    await updateUserData({
+      nama: formData.nama.trim(),
+      usia: Number(formData.usia),
+      tujuan: formData.tujuan.trim(),
+      situasi: formData.situasi.trim(),
+      preferensi: formData.preferensi.trim(),
+      onboardingCompleted: true,
+    });
+    navigate('/dashboard');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex flex-col">
-      <nav className="bg-white border-b border-gray-200 shadow-sm">
+    <div className="min-h-screen bg-[#080B10] text-slate-100 flex flex-col">
+      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-blue/10 blur-[120px] pointer-events-none" />
+      <nav className="relative border-b border-white/5 bg-[#080B10]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2">
-            <SparklesIcon className="w-8 h-8 text-teal" />
-            <h1 className="text-2xl font-bold text-navy">MANTAP</h1>
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal to-blue"><SparklesIcon className="w-6 h-6 text-white" /></span>
+            <h1 className="text-2xl font-extrabold text-white">Gudio<span className="text-teal-300">.AI</span></h1>
           </div>
         </div>
       </nav>
 
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-gray-100">
+          <div className="relative rounded-2xl border border-white/10 bg-[#101722]/90 p-8 shadow-2xl shadow-black/30 md:p-12">
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-navy">Personal Context</h2>
-                <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Langkah {step} dari 4</span>
+                <h2 className="text-3xl font-bold text-white">Personal Context</h2>
+                <span className="rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-slate-400">Langkah {step} dari 4</span>
               </div>
               <div className="flex gap-2">
                 {[1, 2, 3, 4].map((s) => (
                   <div
                     key={s}
                     className={`h-2.5 flex-1 rounded-full transition-all ${
-                      s <= step ? 'bg-gradient-to-r from-teal to-blue' : 'bg-gray-200'
+                      s <= step ? 'bg-gradient-to-r from-teal to-blue' : 'bg-white/10'
                     }`}
                   />
                 ))}
@@ -109,13 +123,13 @@ export default function OnboardingPage() {
             <div className="min-h-[300px]">
               {step === 1 && (
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 mb-6 bg-gradient-to-r from-teal/10 to-blue/10 p-4 rounded-xl">
+                  <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
                     <div className="w-12 h-12 bg-teal rounded-xl flex items-center justify-center flex-shrink-0">
                       <UserIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-navy">Perkenalan</h3>
-                      <p className="text-gray-600 text-sm">Mari berkenalan terlebih dahulu</p>
+                      <h3 className="text-xl font-bold text-white">Perkenalan</h3>
+                      <p className="text-sm text-slate-400">Mari berkenalan terlebih dahulu</p>
                     </div>
                   </div>
 
@@ -140,23 +154,23 @@ export default function OnboardingPage() {
 
               {step === 2 && (
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 mb-6 bg-gradient-to-r from-teal/10 to-blue/10 p-4 rounded-xl">
+                  <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
                     <div className="w-12 h-12 bg-blue rounded-xl flex items-center justify-center flex-shrink-0">
                       <DocumentTextIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-navy">Situasi Anda</h3>
-                      <p className="text-gray-600 text-sm">Ceritakan kondisi yang sedang Anda hadapi</p>
+                      <h3 className="text-xl font-bold text-white">Situasi Anda</h3>
+                      <p className="text-sm text-slate-400">Ceritakan kondisi yang sedang Anda hadapi</p>
                     </div>
                   </div>
 
                   <div className="w-full">
-                    <label className="block text-sm font-semibold text-navy mb-2">
+                    <label className="mb-2 block text-sm font-semibold text-slate-200">
                       Situasi Saat Ini
                     </label>
                     <textarea
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue min-h-[200px] ${
-                        errors.situasi ? 'border-red-500' : 'border-gray-300'
+                      className={`min-h-[200px] w-full rounded-xl border bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 ${
+                        errors.situasi ? 'border-red-500' : 'border-white/10'
                       }`}
                       placeholder="Contoh: Saya sedang mempertimbangkan untuk pindah kerja karena merasa stagnan di posisi saat ini..."
                       value={formData.situasi}
@@ -171,23 +185,23 @@ export default function OnboardingPage() {
 
               {step === 3 && (
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 mb-6 bg-gradient-to-r from-teal/10 to-blue/10 p-4 rounded-xl">
+                  <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-teal to-blue rounded-xl flex items-center justify-center flex-shrink-0">
                       <FlagIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-navy">Tujuan Anda</h3>
-                      <p className="text-gray-600 text-sm">Apa yang ingin Anda capai dari konsultasi ini?</p>
+                      <h3 className="text-xl font-bold text-white">Tujuan Anda</h3>
+                      <p className="text-sm text-slate-400">Apa yang ingin Anda capai dari konsultasi ini?</p>
                     </div>
                   </div>
 
                   <div className="w-full">
-                    <label className="block text-sm font-semibold text-navy mb-2">
+                    <label className="mb-2 block text-sm font-semibold text-slate-200">
                       Tujuan Konsultasi
                     </label>
                     <textarea
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue min-h-[200px] ${
-                        errors.tujuan ? 'border-red-500' : 'border-gray-300'
+                      className={`min-h-[200px] w-full rounded-xl border bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 ${
+                        errors.tujuan ? 'border-red-500' : 'border-white/10'
                       }`}
                       placeholder="Contoh: Saya ingin mendapatkan perspektif objektif tentang apakah ini waktu yang tepat untuk pindah kerja..."
                       value={formData.tujuan}
@@ -202,35 +216,35 @@ export default function OnboardingPage() {
 
               {step === 4 && (
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 mb-6 bg-gradient-to-r from-blue/10 to-teal/10 p-4 rounded-xl">
+                  <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-blue/10 to-teal/10 p-4">
                     <div className="w-12 h-12 bg-navy rounded-xl flex items-center justify-center flex-shrink-0">
                       <CalendarIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-navy">Preferensi (Opsional)</h3>
-                      <p className="text-gray-600 text-sm">Ada hal spesifik yang perlu kami ketahui?</p>
+                      <h3 className="text-xl font-bold text-white">Preferensi (Opsional)</h3>
+                      <p className="text-sm text-slate-400">Ada hal spesifik yang perlu kami ketahui?</p>
                     </div>
                   </div>
 
                   <div className="w-full">
-                    <label className="block text-sm font-semibold text-navy mb-2">
+                    <label className="mb-2 block text-sm font-semibold text-slate-200">
                       Preferensi Konsultasi
                     </label>
                     <textarea
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue min-h-[150px]"
+                      className="min-h-[150px] w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20"
                       placeholder="Contoh: Saya lebih suka diskusi yang langsung to the point, atau saya butuh banyak contoh untuk memahami..."
                       value={formData.preferensi}
                       onChange={(e) => handleChange('preferensi', e.target.value)}
                     />
-                    <p className="mt-2 text-sm text-gray-500">Kolom ini boleh dikosongkan</p>
+                    <p className="mt-2 text-sm text-slate-500">Kolom ini boleh dikosongkan</p>
                   </div>
 
-                  <div className="bg-gradient-to-r from-blue-50 to-teal-50 border-2 border-teal/20 rounded-xl p-5 mt-6">
-                    <h4 className="font-bold text-navy mb-3 flex items-center gap-2">
+                  <div className="mt-6 rounded-xl border border-teal-400/20 bg-gradient-to-r from-blue/10 to-teal/10 p-5">
+                    <h4 className="mb-3 flex items-center gap-2 font-bold text-white">
                       <CheckCircleIcon className="w-5 h-5 text-teal" />
                       Ringkasan Informasi Anda:
                     </h4>
-                    <ul className="space-y-2 text-sm text-gray-700">
+                    <ul className="space-y-2 text-sm text-slate-300">
                       <li className="flex gap-2"><strong className="min-w-[80px]">Nama:</strong> <span>{formData.nama}</span></li>
                       <li className="flex gap-2"><strong className="min-w-[80px]">Usia:</strong> <span>{formData.usia} tahun</span></li>
                       <li className="flex gap-2"><strong className="min-w-[80px]">Situasi:</strong> <span className="line-clamp-2">{formData.situasi.substring(0, 100)}...</span></li>
@@ -241,7 +255,7 @@ export default function OnboardingPage() {
               )}
             </div>
 
-            <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+            <div className="mt-8 flex justify-between border-t border-white/10 pt-6">
               <Button
                 variant="outline"
                 onClick={handleBack}

@@ -6,8 +6,10 @@ import {
   CurrencyDollarIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { createConsultation } from '../services/consultations';
 
 type DecisionDomain = 'karier' | 'pendidikan' | 'relasi' | 'finansial';
 
@@ -77,41 +79,62 @@ const domains: DomainOption[] = [
 
 export default function DomainSelectionPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { currentUser } = useAuth();
+  const problem = (location.state as { problem?: string } | null)?.problem;
   const [selectedDomain, setSelectedDomain] = useState<DecisionDomain | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!problem) navigate('/problem', { replace: true });
+  }, [navigate, problem]);
 
   const handleSelectDomain = (domain: DecisionDomain) => {
     setSelectedDomain(domain);
   };
 
-  const handleContinue = () => {
-    if (selectedDomain) {
-      navigate('/chat');
+  const handleContinue = async () => {
+    if (!selectedDomain || !currentUser || !problem) return;
+    setError('');
+    setIsStarting(true);
+    try {
+      const session = await createConsultation(currentUser.uid, selectedDomain, problem);
+      navigate(`/chat?session=${session.id}`);
+    } catch {
+      setError('Sesi belum bisa dibuat. Periksa koneksi atau konfigurasi Firestore lalu coba lagi.');
+    } finally {
+      setIsStarting(false);
     }
   };
 
+  if (!problem) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
-      <nav className="bg-white border-b border-gray-200 shadow-sm">
+    <div className="min-h-screen bg-[#080B10] text-slate-100">
+      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-blue/10 blur-[120px] pointer-events-none" />
+      <nav className="relative border-b border-white/5 bg-[#080B10]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2">
-            <SparklesIcon className="w-8 h-8 text-teal" />
-            <h1 className="text-2xl font-bold text-navy">MANTAP</h1>
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal to-blue"><SparklesIcon className="w-6 h-6 text-white" /></span>
+            <h1 className="text-2xl font-extrabold text-white">Gudio<span className="text-teal-300">.AI</span></h1>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-teal bg-opacity-10 text-teal px-4 py-2 rounded-full text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-teal-400/25 bg-teal/10 px-4 py-2 text-sm font-semibold text-teal-200 mb-4">
             <SparklesIcon className="w-4 h-4" />
             Langkah 2 dari 4
           </div>
-          <h2 className="text-4xl font-bold text-navy mb-4">
+          <h2 className="text-4xl font-bold text-white mb-4">
             Pilih Domain Keputusan
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Pilih kategori yang paling sesuai dengan keputusan Anda. AI akan menyesuaikan 
-            pertanyaan dan framework berpikir secara spesifik untuk domain yang dipilih.
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Dari ceritamu, domain mana yang paling relevan? Gudio.AI akan menyesuaikan pertanyaan dan kerangka berpikirnya.
           </p>
         </div>
 
@@ -126,13 +149,15 @@ export default function DomainSelectionPage() {
           ))}
         </div>
 
+        {error && <p role="alert" className="mx-auto mb-5 max-w-xl rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-center text-sm text-red-200">{error}</p>}
         {selectedDomain && (
           <div className="flex justify-center">
             <button
               onClick={handleContinue}
-              className="bg-teal text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-opacity-90 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg"
+              disabled={isStarting}
+              className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-teal to-blue px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-teal-900/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Mulai Konsultasi
+              {isStarting ? 'Menyiapkan sesi...' : 'Mulai Konsultasi'}
               <ArrowRightIcon className="w-6 h-6" />
             </button>
           </div>
@@ -199,10 +224,10 @@ function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
   return (
     <button
       onClick={onSelect}
-      className={`bg-white rounded-xl p-6 text-left transition-all transform hover:scale-[1.02] hover:shadow-xl border-2 ${
+      className={`rounded-2xl bg-white/5 p-6 text-left transition-all hover:-translate-y-1 hover:bg-white/[0.08] border ${
         isSelected 
           ? `${colors.border} shadow-lg ring-4 ring-opacity-20 ${colors.ring}` 
-          : 'border-gray-200 hover:border-gray-300'
+          : 'border-white/10 hover:border-white/20'
       }`}
     >
       <div className="flex items-start gap-4 mb-4">
@@ -210,8 +235,8 @@ function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
           {domain.icon}
         </div>
         <div className="flex-1">
-          <h3 className="text-2xl font-bold text-navy mb-2">{domain.title}</h3>
-          <p className="text-gray-600 text-sm">{domain.description}</p>
+          <h3 className="text-2xl font-bold text-white mb-2">{domain.title}</h3>
+          <p className="text-slate-400 text-sm">{domain.description}</p>
         </div>
         {isSelected && (
           <div className={`${colors.bg} text-white rounded-full p-2 flex-shrink-0`}>
@@ -222,11 +247,11 @@ function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
         )}
       </div>
 
-      <div className="space-y-2 mt-4 pt-4 border-t border-gray-100">
+      <div className="space-y-2 mt-4 pt-4 border-t border-white/10">
         <p className={`text-xs font-bold ${colors.text} mb-3 uppercase tracking-wide`}>Contoh keputusan:</p>
         <ul className="space-y-2">
           {domain.examples.map((example, idx) => (
-            <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+            <li key={idx} className="text-sm text-slate-300 flex items-start gap-2">
               <span className={`${colors.text} font-bold flex-shrink-0`}>•</span>
               <span>{example}</span>
             </li>

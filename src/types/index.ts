@@ -4,6 +4,9 @@ export interface User {
   usia: number;
   tujuan: string;
   createdAt: Date;
+  situasi?: string;
+  preferensi?: string;
+  onboardingCompleted?: boolean;
 }
 
 export interface Session {

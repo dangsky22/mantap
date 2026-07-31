@@ -25,7 +25,7 @@ export function ChatInput({ onSend, disabled = false, placeholder = 'Ketik pesan
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-white/5 bg-transparent p-4">
       <div className="flex gap-3 items-end">
         <textarea
           value={message}
@@ -33,18 +33,18 @@ export function ChatInput({ onSend, disabled = false, placeholder = 'Ketik pesan
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue resize-none min-h-[60px] max-h-[150px] disabled:bg-gray-100"
+          className="min-h-[60px] max-h-[150px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 disabled:bg-white/5"
           rows={2}
         />
         <button
           onClick={handleSend}
           disabled={!message.trim() || disabled}
-          className="bg-teal text-white p-3 rounded-lg hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+          className="flex-shrink-0 rounded-xl bg-gradient-to-br from-teal to-blue p-3 text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <PaperAirplaneIcon className="w-6 h-6" />
         </button>
       </div>
-      <p className="text-xs text-gray-500 mt-2">
+      <p className="mt-2 text-xs text-slate-500">
         Tekan Enter untuk kirim, Shift+Enter untuk baris baru
       </p>
     </div>

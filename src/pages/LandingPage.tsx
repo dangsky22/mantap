@@ -26,14 +26,14 @@ export default function LandingPage() {
                 <SparklesIcon className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                MANTAP
+                Gudio.AI
               </span>
             </div>
             <button 
-              onClick={() => navigate('/onboarding')}
+              onClick={() => navigate('/auth')}
               className="px-5 py-2 rounded-xl text-sm font-semibold border border-white/10 hover:border-teal/50 hover:bg-teal/5 transition-all text-slate-200"
             >
-              Masuk
+              Masuk / Daftar
             </button>
           </div>
         </div>
@@ -56,11 +56,11 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="text-base sm:text-lg text-slate-400 mb-10 leading-relaxed max-w-2xl">
-              MANTAP memandu Anda membedah pro-kontra, memetakan risiko finansial, karier, relasi, dan pendidikan melalui diskusi interaktif. Bebaskan diri dari pilihan emosional dan temukan keyakinan objektif.
+              Gudio.AI memandu Anda membedah pro-kontra, memetakan risiko finansial, karier, relasi, dan pendidikan melalui diskusi interaktif. Bebaskan diri dari pilihan emosional dan temukan keyakinan objektif.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
               <button 
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/auth')}
                 className="bg-gradient-to-r from-teal to-blue hover:from-teal/90 hover:to-blue/90 text-white font-bold px-8 py-4 rounded-xl shadow-xl shadow-teal-500/10 hover:shadow-teal-500/25 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2.5"
               >
                 Mulai Konsultasi Gratis
@@ -78,7 +78,7 @@ export default function LandingPage() {
             <div className="mt-12 pt-8 border-t border-white/5 flex flex-wrap gap-8 items-center text-slate-500 text-xs">
               <div className="flex items-center gap-2">
                 <span className="text-teal text-base">★★★★★</span>
-                <span className="text-slate-400">Dirancang untuk Hackathon IT FEST 6.0</span>
+                <span className="text-slate-400">Mitra berpikir untuk keputusan penting</span>
               </div>
               <div className="h-4 w-px bg-white/10 hidden md:block" />
               <div>
@@ -99,7 +99,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
                   <div>
-                    <h4 className="text-xs font-bold text-white tracking-wide">MANTAP AI Partner</h4>
+                    <h4 className="text-xs font-bold text-white tracking-wide">Gudio.AI Partner</h4>
                     <p className="text-[10px] text-slate-400">Analisis Domain: Karier</p>
                   </div>
                 </div>
@@ -184,10 +184,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Kenapa MANTAP Berbeda?
+              Kenapa Gudio.AI Berbeda?
             </h3>
             <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
-              Bukan chatbot biasa — MANTAP dirancang khusus sebagai mitra refleksi logis untuk mempertajam proses berpikir Anda.
+              Bukan chatbot biasa — Gudio.AI dirancang khusus sebagai mitra refleksi logis untuk mempertajam proses berpikir Anda.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -220,7 +220,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-20">
             <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Cara Kerja MANTAP
+              Cara Kerja Gudio.AI
             </h3>
             <p className="text-slate-400 text-sm sm:text-base">
               Empat langkah terstruktur menuju keputusan yang lebih matang
@@ -264,7 +264,7 @@ export default function LandingPage() {
             Mulailah berdiskusi secara gratis dan rasakan proses berpikir yang lebih jernih serta terorganisir.
           </p>
           <button 
-            onClick={() => navigate('/onboarding')}
+            onClick={() => navigate('/auth')}
             className="bg-gradient-to-r from-teal to-blue hover:from-teal/90 hover:to-blue/90 text-white font-bold px-8 py-4 rounded-xl shadow-xl shadow-teal-500/10 hover:shadow-teal-500/20 transition-all hover:-translate-y-0.5 inline-flex items-center gap-2"
           >
             Mulai Sekarang
@@ -277,7 +277,7 @@ export default function LandingPage() {
       <footer className="border-t border-white/5 py-12 px-4 sm:px-6 lg:px-8 bg-[#06080c]">
         <div className="max-w-7xl mx-auto text-center text-slate-500">
           <p className="mb-2 text-slate-400 font-semibold">
-            MANTAP
+            Gudio.AI
           </p>
           <p className="text-sm">
             Mitra AI untuk Pengambilan Keputusan Tepat

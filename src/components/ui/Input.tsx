@@ -7,13 +7,13 @@ export function Input({ label, error, className = '', ...props }: InputProps) {
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-semibold text-navy mb-2">
+        <label className="block text-sm font-semibold text-slate-200 mb-2">
           {label}
         </label>
       )}
       <input
-        className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue ${
-          error ? 'border-red-500' : 'border-gray-300'
+        className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 ${
+          error ? 'border-red-500' : 'border-white/10'
         } ${className}`}
         {...props}
       />

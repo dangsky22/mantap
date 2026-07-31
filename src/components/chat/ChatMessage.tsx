@@ -24,18 +24,18 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
         <div
           className={`rounded-2xl px-5 py-3.5 shadow-sm ${
             isAI
-              ? 'bg-white border border-gray-100 text-gray-800'
-              : 'bg-gradient-to-br from-blue to-blue-700 text-white shadow-blue-200'
+              ? 'border border-white/10 bg-white/5 text-slate-200 shadow-none'
+              : 'bg-gradient-to-br from-teal to-blue text-white shadow-lg shadow-teal-950/30'
           }`}
         >
-          <p className="whitespace-pre-wrap leading-relaxed">{content}</p>
+          <div className="whitespace-pre-wrap leading-relaxed">{renderMarkdown(content)}</div>
         </div>
         
         {isAI && explanation && (
           <div className="mt-3">
             <button
               onClick={() => setShowExplanation(!showExplanation)}
-              className="flex items-center gap-2 text-sm text-teal hover:text-opacity-80 transition-all font-bold px-2 py-1 rounded-lg hover:bg-teal/5"
+              className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-bold text-teal-300 transition hover:bg-teal/10 hover:text-teal-200"
             >
               <LightBulbIcon className="w-4 h-4" />
               <span>Kenapa saran ini?</span>
@@ -47,8 +47,8 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
             </button>
             
             {showExplanation && (
-              <div className="mt-2 p-4 bg-gradient-to-br from-white to-blue-50 border-l-4 border-teal rounded-r-xl shadow-sm text-sm text-gray-700 animate-in fade-in slide-in-from-top-1 duration-200">
-                <p className="font-bold text-navy mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+              <div className="mt-2 rounded-r-xl border-l-4 border-teal bg-teal/10 p-4 text-sm text-slate-300 animate-in fade-in slide-in-from-top-1 duration-200">
+                <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-300">
                   <SparklesIcon className="w-3 h-3 text-teal" />
                   Insight Logika:
                 </p>
@@ -58,16 +58,30 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
           </div>
         )}
         
-        <p className="text-xs text-gray-400 mt-1 px-2">
+        <p className="mt-1 px-2 text-xs text-slate-500">
           {timestamp.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
 
       {!isAI && (
-        <div className="flex-shrink-0 w-10 h-10 bg-blue rounded-full flex items-center justify-center order-2">
+        <div className="order-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue/80">
           <span className="text-white font-semibold text-sm">You</span>
         </div>
       )}
     </div>
   );
+}
+
+function renderMarkdown(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={index}>{part.slice(1, -1)}</em>;
+    }
+    return part;
+  });
 }
