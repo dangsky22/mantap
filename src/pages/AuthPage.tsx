@@ -56,7 +56,7 @@ export default function AuthPage() {
           <span className="inline-flex items-center gap-2 rounded-full border border-teal-400/25 bg-teal/10 px-3 py-1.5 text-xs font-semibold text-teal-200">
             <SparklesIcon className="h-4 w-4" /> Ruang untuk berpikir jernih
           </span>
-          <h1 className="mt-7 text-5xl font-extrabold leading-tight tracking-tight">Keputusan tetap milikmu. <span className="text-teal-300">Kejernihannya kita cari bersama.</span></h1>
+          <h1 className="mt-7 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">Keputusan tetap milikmu. <span className="text-teal-300">Kejernihannya kita cari bersama.</span></h1>
           <p className="mt-6 text-lg leading-relaxed text-slate-400">Guido.AI membantu kamu mengurai pilihan, risiko, dan alasan tanpa menghakimi atau mendikte.</p>
         </div>
         <div className="relative space-y-3 text-sm text-slate-300">

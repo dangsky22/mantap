@@ -145,7 +145,7 @@ export default function OnboardingPage() {
               </div>
             </div>
 
-            <div className="min-h-[300px]">
+            <div className="min-h-[200px] md:min-h-[300px]">
               {step === 1 && (
                 <div className="space-y-6">
                   <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">

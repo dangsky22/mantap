@@ -33,7 +33,7 @@ export function ChatInput({ onSend, disabled = false, placeholder = 'Ketik pesan
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
           disabled={disabled}
-          className="min-h-[60px] max-h-[150px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 disabled:bg-white/5"
+          className="min-h-[48px] sm:min-h-[60px] max-h-[150px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 disabled:bg-white/5"
           rows={2}
         />
         <button

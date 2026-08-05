@@ -48,7 +48,7 @@ export default function LandingPage() {
               <img src="/logo.png" alt="Guido.AI Logo" className="w-3.5 h-3.5 text-teal" />
               AI Sparring Partner Pengambilan Keputusan
             </div>
-            <h2 className="text-4xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               Ambil Keputusan Penting dengan <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-300 via-cyan-400 to-blue-400 drop-shadow-sm">
                 Logika &amp; Tanpa Keraguan
@@ -254,7 +254,7 @@ export default function LandingPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5 bg-gradient-to-b from-transparent to-teal/5 relative">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="w-16 h-16 rounded-2xl bg-teal/10 flex items-center justify-center text-teal mx-auto mb-8 border border-teal/20">
-            <img src="/logo.png" alt="Guido.AI Logo" className="w-50 h-50 object-contain" />
+            <img src="/logo.png" alt="Guido.AI Logo" className="w-12 h-12 object-contain" />
           </div>
           <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Siap Membuat Keputusan yang Lebih Baik?

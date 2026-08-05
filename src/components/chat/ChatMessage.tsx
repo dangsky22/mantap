@@ -20,7 +20,7 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
         </div>
       )}
       
-      <div className={`max-w-[80%] ${isAI ? 'order-2' : 'order-1'}`}>
+      <div className={`max-w-[85%] sm:max-w-[80%] lg:max-w-[75%] ${isAI ? 'order-2' : 'order-1'}`}>
         <div
           className={`rounded-2xl px-5 py-3.5 shadow-sm ${
             isAI

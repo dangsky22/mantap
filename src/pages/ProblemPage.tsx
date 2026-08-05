@@ -54,7 +54,7 @@ export default function ProblemPage() {
               setError("");
             }}
             placeholder="Contoh: Saya mendapat tawaran kerja baru, tapi khawatir meninggalkan tim dan stabilitas yang sudah saya punya..."
-            className="mt-3 min-h-48 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20"
+            className="mt-3 min-h-32 sm:min-h-48 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20"
           />
         </label>
         <div className="mt-2 flex justify-between text-xs text-slate-500">

@@ -122,7 +122,7 @@ export default function DomainSelectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080B10] text-slate-100">
+    <div className="min-h-screen bg-[#080B10] text-slate-100 overflow-x-hidden">
       <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-blue/10 blur-[120px] pointer-events-none" />
       <nav className="relative border-b border-white/5 bg-[#080B10]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -147,7 +147,7 @@ export default function DomainSelectionPage() {
             <SparklesIcon className="w-4 h-4" />
             Langkah 2 dari 4
           </div>
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Pilih Domain Keputusan
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
