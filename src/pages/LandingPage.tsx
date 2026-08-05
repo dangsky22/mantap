@@ -22,11 +22,11 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal to-blue flex items-center justify-center shadow-lg shadow-teal/20">
-                <SparklesIcon className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+                <img src="/logo.png" alt="Guido.AI Logo" className="w-10 h-10 object-contain" />
               </div>
               <span className="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                Gudio.AI
+                Guido.AI
               </span>
             </div>
             <button 
@@ -52,11 +52,11 @@ export default function LandingPage() {
             <h2 className="text-4xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
               Ambil Keputusan Penting dengan <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-300 via-cyan-400 to-blue-400 drop-shadow-sm">
-                Logika & Tanpa Keraguan
+                Logika &amp; Tanpa Keraguan
               </span>
             </h2>
             <p className="text-base sm:text-lg text-slate-400 mb-10 leading-relaxed max-w-2xl">
-              Gudio.AI memandu Anda membedah pro-kontra, memetakan risiko finansial, karier, relasi, dan pendidikan melalui diskusi interaktif. Bebaskan diri dari pilihan emosional dan temukan keyakinan objektif.
+              Guido.AI memandu Anda membedah pro-kontra, memetakan risiko finansial, karier, relasi, dan pendidikan melalui diskusi interaktif. Bebaskan diri dari pilihan emosional dan temukan keyakinan objektif.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
               <button 
@@ -99,7 +99,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
                   <div>
-                    <h4 className="text-xs font-bold text-white tracking-wide">Gudio.AI Partner</h4>
+                    <h4 className="text-xs font-bold text-white tracking-wide">Guido.AI Partner</h4>
                     <p className="text-[10px] text-slate-400">Analisis Domain: Karier</p>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ export default function LandingPage() {
               <span className="text-sm">💰</span>
               <span className="text-[10px] font-bold text-slate-200">Finansial</span>
             </div>
-            <div className="absolute top-1/2 -right-8 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg flex items-center gap-2 hidden sm:flex">
+            <div className="absolute top-1/2 -right-8 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg items-center gap-2 hidden sm:flex">
               <span className="text-sm">🎓</span>
               <span className="text-[10px] font-bold text-slate-200">Pendidikan</span>
             </div>
@@ -184,10 +184,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Kenapa Gudio.AI Berbeda?
+              Kenapa Guido.AI Berbeda?
             </h3>
             <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
-              Bukan chatbot biasa — Gudio.AI dirancang khusus sebagai mitra refleksi logis untuk mempertajam proses berpikir Anda.
+              Bukan chatbot biasa — Guido.AI dirancang khusus sebagai mitra refleksi logis untuk mempertajam proses berpikir Anda.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -220,7 +220,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-20">
             <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Cara Kerja Gudio.AI
+              Cara Kerja Guido.AI
             </h3>
             <p className="text-slate-400 text-sm sm:text-base">
               Empat langkah terstruktur menuju keputusan yang lebih matang
@@ -244,7 +244,7 @@ export default function LandingPage() {
             />
             <StepCard
               number="04"
-              title="Konfirmasi & Catat di Jurnal"
+              title="Konfirmasi &amp; Catat di Jurnal"
               description="Tegaskan pilihan final Anda dengan penuh kesadaran dan simpan ke Decision Journal untuk referensi di masa depan."
             />
           </div>
@@ -277,7 +277,7 @@ export default function LandingPage() {
       <footer className="border-t border-white/5 py-12 px-4 sm:px-6 lg:px-8 bg-[#06080c]">
         <div className="max-w-7xl mx-auto text-center text-slate-500">
           <p className="mb-2 text-slate-400 font-semibold">
-            Gudio.AI
+            Guido.AI
           </p>
           <p className="text-sm">
             Mitra AI untuk Pengambilan Keputusan Tepat
@@ -328,4 +328,3 @@ function StepCard({ number, title, description }: StepCardProps) {
     </div>
   );
 }
-

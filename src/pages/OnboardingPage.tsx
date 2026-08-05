@@ -1,32 +1,40 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SparklesIcon, ArrowRightIcon, UserIcon, CalendarIcon, DocumentTextIcon, FlagIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
-import { useAuth } from '../hooks/useAuth';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowRightIcon,
+  UserIcon,
+  CalendarIcon,
+  DocumentTextIcon,
+  FlagIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/outline";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import { useAuth } from "../hooks/useAuth";
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const { updateUserData, userData } = useAuth();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    nama: '',
-    usia: '',
-    situasi: '',
-    tujuan: '',
-    preferensi: ''
+    nama: "",
+    usia: "",
+    situasi: "",
+    tujuan: "",
+    preferensi: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (userData?.onboardingCompleted) navigate('/dashboard', { replace: true });
+    if (userData?.onboardingCompleted)
+      navigate("/dashboard", { replace: true });
   }, [navigate, userData?.onboardingCompleted]);
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -35,24 +43,27 @@ export default function OnboardingPage() {
 
     if (currentStep === 1) {
       if (!formData.nama.trim()) {
-        newErrors.nama = 'Nama harus diisi';
+        newErrors.nama = "Nama harus diisi";
       }
       if (!formData.usia) {
-        newErrors.usia = 'Usia harus diisi';
-      } else if (parseInt(formData.usia) < 13 || parseInt(formData.usia) > 100) {
-        newErrors.usia = 'Usia harus antara 13-100 tahun';
+        newErrors.usia = "Usia harus diisi";
+      } else if (
+        parseInt(formData.usia) < 13 ||
+        parseInt(formData.usia) > 100
+      ) {
+        newErrors.usia = "Usia harus antara 13-100 tahun";
       }
     }
 
     if (currentStep === 2) {
       if (!formData.situasi.trim() || formData.situasi.length < 10) {
-        newErrors.situasi = 'Ceritakan situasi Anda minimal 10 karakter';
+        newErrors.situasi = "Ceritakan situasi Anda minimal 10 karakter";
       }
     }
 
     if (currentStep === 3) {
       if (!formData.tujuan.trim() || formData.tujuan.length < 10) {
-        newErrors.tujuan = 'Jelaskan tujuan Anda minimal 10 karakter';
+        newErrors.tujuan = "Jelaskan tujuan Anda minimal 10 karakter";
       }
     }
 
@@ -85,7 +96,7 @@ export default function OnboardingPage() {
       preferensi: formData.preferensi.trim(),
       onboardingCompleted: true,
     });
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   return (
@@ -94,8 +105,16 @@ export default function OnboardingPage() {
       <nav className="relative border-b border-white/5 bg-[#080B10]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal to-blue"><SparklesIcon className="w-6 h-6 text-white" /></span>
-            <h1 className="text-2xl font-extrabold text-white">Gudio<span className="text-teal-300">.AI</span></h1>
+            <span className="grid h-10 w-10 place-items-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+              <img
+                src="/logo.png"
+                alt="Guido.AI Logo"
+                className="h-10 w-10 object-contain"
+              />
+            </span>
+            <h1 className="text-2xl font-extrabold text-white">
+              Guidio<span className="text-teal-300">.AI</span>
+            </h1>
           </div>
         </div>
       </nav>
@@ -105,15 +124,21 @@ export default function OnboardingPage() {
           <div className="relative rounded-2xl border border-white/10 bg-[#101722]/90 p-8 shadow-2xl shadow-black/30 md:p-12">
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-white">Personal Context</h2>
-                <span className="rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-slate-400">Langkah {step} dari 4</span>
+                <h2 className="text-3xl font-bold text-white">
+                  Personal Context
+                </h2>
+                <span className="rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-slate-400">
+                  Langkah {step} dari 4
+                </span>
               </div>
               <div className="flex gap-2">
                 {[1, 2, 3, 4].map((s) => (
                   <div
                     key={s}
                     className={`h-2.5 flex-1 rounded-full transition-all ${
-                      s <= step ? 'bg-gradient-to-r from-teal to-blue' : 'bg-white/10'
+                      s <= step
+                        ? "bg-gradient-to-r from-teal to-blue"
+                        : "bg-white/10"
                     }`}
                   />
                 ))}
@@ -128,8 +153,12 @@ export default function OnboardingPage() {
                       <UserIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">Perkenalan</h3>
-                      <p className="text-sm text-slate-400">Mari berkenalan terlebih dahulu</p>
+                      <h3 className="text-xl font-bold text-white">
+                        Perkenalan
+                      </h3>
+                      <p className="text-sm text-slate-400">
+                        Mari berkenalan terlebih dahulu
+                      </p>
                     </div>
                   </div>
 
@@ -137,7 +166,7 @@ export default function OnboardingPage() {
                     label="Nama Lengkap"
                     placeholder="Masukkan nama Anda"
                     value={formData.nama}
-                    onChange={(e) => handleChange('nama', e.target.value)}
+                    onChange={(e) => handleChange("nama", e.target.value)}
                     error={errors.nama}
                   />
 
@@ -146,7 +175,7 @@ export default function OnboardingPage() {
                     type="number"
                     placeholder="Masukkan usia Anda"
                     value={formData.usia}
-                    onChange={(e) => handleChange('usia', e.target.value)}
+                    onChange={(e) => handleChange("usia", e.target.value)}
                     error={errors.usia}
                   />
                 </div>
@@ -159,8 +188,12 @@ export default function OnboardingPage() {
                       <DocumentTextIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">Situasi Anda</h3>
-                      <p className="text-sm text-slate-400">Ceritakan kondisi yang sedang Anda hadapi</p>
+                      <h3 className="text-xl font-bold text-white">
+                        Situasi Anda
+                      </h3>
+                      <p className="text-sm text-slate-400">
+                        Ceritakan kondisi yang sedang Anda hadapi
+                      </p>
                     </div>
                   </div>
 
@@ -170,14 +203,16 @@ export default function OnboardingPage() {
                     </label>
                     <textarea
                       className={`min-h-[200px] w-full rounded-xl border bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 ${
-                        errors.situasi ? 'border-red-500' : 'border-white/10'
+                        errors.situasi ? "border-red-500" : "border-white/10"
                       }`}
                       placeholder="Contoh: Saya sedang mempertimbangkan untuk pindah kerja karena merasa stagnan di posisi saat ini..."
                       value={formData.situasi}
-                      onChange={(e) => handleChange('situasi', e.target.value)}
+                      onChange={(e) => handleChange("situasi", e.target.value)}
                     />
                     {errors.situasi && (
-                      <p className="mt-1 text-sm text-red-500">{errors.situasi}</p>
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.situasi}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -190,8 +225,12 @@ export default function OnboardingPage() {
                       <FlagIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">Tujuan Anda</h3>
-                      <p className="text-sm text-slate-400">Apa yang ingin Anda capai dari konsultasi ini?</p>
+                      <h3 className="text-xl font-bold text-white">
+                        Tujuan Anda
+                      </h3>
+                      <p className="text-sm text-slate-400">
+                        Apa yang ingin Anda capai dari konsultasi ini?
+                      </p>
                     </div>
                   </div>
 
@@ -201,14 +240,16 @@ export default function OnboardingPage() {
                     </label>
                     <textarea
                       className={`min-h-[200px] w-full rounded-xl border bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 ${
-                        errors.tujuan ? 'border-red-500' : 'border-white/10'
+                        errors.tujuan ? "border-red-500" : "border-white/10"
                       }`}
                       placeholder="Contoh: Saya ingin mendapatkan perspektif objektif tentang apakah ini waktu yang tepat untuk pindah kerja..."
                       value={formData.tujuan}
-                      onChange={(e) => handleChange('tujuan', e.target.value)}
+                      onChange={(e) => handleChange("tujuan", e.target.value)}
                     />
                     {errors.tujuan && (
-                      <p className="mt-1 text-sm text-red-500">{errors.tujuan}</p>
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.tujuan}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -221,8 +262,12 @@ export default function OnboardingPage() {
                       <CalendarIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">Preferensi (Opsional)</h3>
-                      <p className="text-sm text-slate-400">Ada hal spesifik yang perlu kami ketahui?</p>
+                      <h3 className="text-xl font-bold text-white">
+                        Preferensi (Opsional)
+                      </h3>
+                      <p className="text-sm text-slate-400">
+                        Ada hal spesifik yang perlu kami ketahui?
+                      </p>
                     </div>
                   </div>
 
@@ -234,9 +279,13 @@ export default function OnboardingPage() {
                       className="min-h-[150px] w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20"
                       placeholder="Contoh: Saya lebih suka diskusi yang langsung to the point, atau saya butuh banyak contoh untuk memahami..."
                       value={formData.preferensi}
-                      onChange={(e) => handleChange('preferensi', e.target.value)}
+                      onChange={(e) =>
+                        handleChange("preferensi", e.target.value)
+                      }
                     />
-                    <p className="mt-2 text-sm text-slate-500">Kolom ini boleh dikosongkan</p>
+                    <p className="mt-2 text-sm text-slate-500">
+                      Kolom ini boleh dikosongkan
+                    </p>
                   </div>
 
                   <div className="mt-6 rounded-xl border border-teal-400/20 bg-gradient-to-r from-blue/10 to-teal/10 p-5">
@@ -245,10 +294,26 @@ export default function OnboardingPage() {
                       Ringkasan Informasi Anda:
                     </h4>
                     <ul className="space-y-2 text-sm text-slate-300">
-                      <li className="flex gap-2"><strong className="min-w-[80px]">Nama:</strong> <span>{formData.nama}</span></li>
-                      <li className="flex gap-2"><strong className="min-w-[80px]">Usia:</strong> <span>{formData.usia} tahun</span></li>
-                      <li className="flex gap-2"><strong className="min-w-[80px]">Situasi:</strong> <span className="line-clamp-2">{formData.situasi.substring(0, 100)}...</span></li>
-                      <li className="flex gap-2"><strong className="min-w-[80px]">Tujuan:</strong> <span className="line-clamp-2">{formData.tujuan.substring(0, 100)}...</span></li>
+                      <li className="flex gap-2">
+                        <strong className="min-w-[80px]">Nama:</strong>{" "}
+                        <span>{formData.nama}</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <strong className="min-w-[80px]">Usia:</strong>{" "}
+                        <span>{formData.usia} tahun</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <strong className="min-w-[80px]">Situasi:</strong>{" "}
+                        <span className="line-clamp-2">
+                          {formData.situasi.substring(0, 100)}...
+                        </span>
+                      </li>
+                      <li className="flex gap-2">
+                        <strong className="min-w-[80px]">Tujuan:</strong>{" "}
+                        <span className="line-clamp-2">
+                          {formData.tujuan.substring(0, 100)}...
+                        </span>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -264,11 +329,8 @@ export default function OnboardingPage() {
               >
                 Kembali
               </Button>
-              <Button
-                onClick={handleNext}
-                className="flex items-center gap-2"
-              >
-                {step === 4 ? 'Selesai' : 'Lanjut'}
+              <Button onClick={handleNext} className="flex items-center gap-2">
+                {step === 4 ? "Selesai" : "Lanjut"}
                 <ArrowRightIcon className="w-5 h-5" />
               </Button>
             </div>

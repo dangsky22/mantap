@@ -57,7 +57,7 @@ export default function AuthPage() {
             <SparklesIcon className="h-4 w-4" /> Ruang untuk berpikir jernih
           </span>
           <h1 className="mt-7 text-5xl font-extrabold leading-tight tracking-tight">Keputusan tetap milikmu. <span className="text-teal-300">Kejernihannya kita cari bersama.</span></h1>
-          <p className="mt-6 text-lg leading-relaxed text-slate-400">Gudio.AI membantu kamu mengurai pilihan, risiko, dan alasan tanpa menghakimi atau mendikte.</p>
+          <p className="mt-6 text-lg leading-relaxed text-slate-400">Guido.AI membantu kamu mengurai pilihan, risiko, dan alasan tanpa menghakimi atau mendikte.</p>
         </div>
         <div className="relative space-y-3 text-sm text-slate-300">
           {['Pertanyaan reflektif, bukan jawaban instan', 'Konteks diskusi tersimpan secara pribadi', 'Keputusan final selalu di tanganmu'].map((item) => (
@@ -87,7 +87,7 @@ export default function AuthPage() {
             )}
             {error && <p role="alert" className="rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-200">{error}</p>}
             <button disabled={isSubmitting} className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal to-blue px-4 py-3.5 font-bold text-white shadow-lg shadow-teal-900/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
-              {isSubmitting ? 'Memproses...' : mode === 'signup' ? 'Buat akun & lanjutkan' : 'Masuk ke Gudio.AI'} <ArrowRightIcon className="h-5 w-5" />
+              {isSubmitting ? 'Memproses...' : mode === 'signup' ? 'Buat akun & lanjutkan' : 'Masuk ke Guido.AI'} <ArrowRightIcon className="h-5 w-5" />
             </button>
           </form>
           <p className="mt-6 text-center text-sm text-slate-400">
@@ -100,7 +100,7 @@ export default function AuthPage() {
               {mode === 'login' ? 'Daftar sekarang' : 'Masuk di sini'}
             </button>
           </p>
-          <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">Dengan melanjutkan, kamu setuju menggunakan Gudio.AI sebagai mitra berpikir—bukan pengambil keputusan.</p>
+          <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">Dengan melanjutkan, kamu setuju menggunakan Guido.AI sebagai mitra berpikir—bukan pengambil keputusan.</p>
         </div>
       </section>
     </main>
@@ -108,5 +108,5 @@ export default function AuthPage() {
 }
 
 function Brand() {
-  return <><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal to-blue shadow-lg shadow-teal/20"><SparklesIcon className="h-6 w-6 text-white" /></span><span className="text-2xl font-extrabold tracking-tight text-white">Gudio<span className="text-teal-300">.AI</span></span></>;
+  return <><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal to-blue shadow-lg shadow-teal/20"><SparklesIcon className="h-6 w-6 text-white" /></span><span className="text-2xl font-extrabold tracking-tight text-white">Guido<span className="text-teal-300">.AI</span></span></>;
 }

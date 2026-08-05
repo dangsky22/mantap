@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SparklesIcon, LightBulbIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { LightBulbIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 interface ChatMessageProps {
   role: 'user' | 'ai';
@@ -15,8 +15,8 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
   return (
     <div className={`flex gap-4 ${isAI ? 'justify-start' : 'justify-end'} mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300`}>
       {isAI && (
-        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-teal to-blue rounded-xl flex items-center justify-center shadow-md">
-          <SparklesIcon className="w-6 h-6 text-white" />
+        <div className="flex-shrink-0 w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-teal/20">
+          <img src="/logo.png" alt="Guido.AI" className="w-10 h-10 object-contain" />
         </div>
       )}
       
@@ -49,7 +49,7 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
             {showExplanation && (
               <div className="mt-2 rounded-r-xl border-l-4 border-teal bg-teal/10 p-4 text-sm text-slate-300 animate-in fade-in slide-in-from-top-1 duration-200">
                 <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-300">
-                  <SparklesIcon className="w-3 h-3 text-teal" />
+                  <LightBulbIcon className="w-3 h-3 text-teal" />
                   Insight Logika:
                 </p>
                 <p className="leading-relaxed italic">{explanation}</p>

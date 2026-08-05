@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   CheckCircleIcon,
-  SparklesIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -139,7 +138,7 @@ export default function ChatRoomPage() {
       } catch (err) {
         console.error("Initial AI response failed:", err);
         setError(
-          "Gudio.AI belum bisa membuka percakapan. Coba muat ulang halaman.",
+          "Guidio.AI belum bisa membuka percakapan. Coba muat ulang halaman.",
         );
         introStartedRef.current = false;
       } finally {
@@ -176,7 +175,7 @@ export default function ChatRoomPage() {
     } catch (err) {
       console.error("Chat request failed:", err);
       setError(
-        "Pesan belum terkirim atau Gudio.AI belum bisa merespons. Periksa API key Gemini dan coba lagi.",
+        "Pesan belum terkirim atau Guidio.AI belum bisa merespons. Periksa API key Gemini dan coba lagi.",
       );
     } finally {
       setIsTyping(false);
@@ -214,12 +213,12 @@ export default function ChatRoomPage() {
       >
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-teal to-blue">
-              <SparklesIcon className="h-6 w-6" />
+            <span className="grid h-10 w-10 place-items-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+              <img src="/logo.png" alt="Guidio.AI Logo" className="h-10 w-10 object-contain" />
             </span>
             <div>
               <h1 className="font-extrabold text-white">
-                Gudio<span className="text-teal-300">.AI</span>
+                Guidio<span className="text-teal-300">.AI</span>
               </h1>
               <p className="text-xs text-slate-400">
                 Domain: {domainLabels[domain]}
@@ -244,7 +243,7 @@ export default function ChatRoomPage() {
           </p>
           <p className="mt-1 text-sm leading-relaxed text-slate-400">
             Jelaskan konteks, pilihan, dan hal yang paling kamu pertimbangkan.
-            Gudio.AI akan membantu memetakannya.
+            Guidio.AI akan membantu memetakannya.
           </p>
         </div>
         {error && (
@@ -257,11 +256,11 @@ export default function ChatRoomPage() {
         )}
         {messagesLoaded && messages.length === 0 && !isTyping && (
           <div className="mb-6 flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-5">
-            <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-gradient-to-br from-teal to-blue">
-              <SparklesIcon className="h-5 w-5" />
+            <span className="flex-none w-9 h-9 rounded-xl overflow-hidden">
+              <img src="/logo.png" alt="Guido.AI" className="w-9 h-9 object-contain" />
             </span>
             <p className="leading-relaxed text-slate-300">
-              Konteksmu sudah diterima. Gudio.AI akan memulai diskusi dari
+              Konteksmu sudah diterima. Guido.AI akan memulai diskusi dari
               masalah ini.
             </p>
           </div>
@@ -272,7 +271,7 @@ export default function ChatRoomPage() {
         {isTyping && (
           <div className="mb-5 flex items-center gap-3 text-sm text-slate-400">
             <span className="h-2 w-2 animate-pulse rounded-full bg-teal-300" />
-            Gudio.AI sedang menyusun pertanyaan...
+            Guidio.AI sedang menyusun pertanyaan...
           </div>
         )}
         <div ref={messagesEndRef} />

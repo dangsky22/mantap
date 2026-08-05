@@ -97,7 +97,7 @@ export async function sendMessageToGemini(
 }
 
 function getSystemPrompt(domain: DecisionDomain): string {
-  const basePrompt = `Kamu adalah Gudio.AI, AI Sparring Partner untuk pengambilan keputusan pribadi. Peranmu adalah membantu pengguna berpikir lebih objektif dan terstruktur, BUKAN memberikan jawaban langsung.
+  const basePrompt = `Kamu adalah Guido.AI, AI Sparring Partner untuk pengambilan keputusan pribadi. Peranmu adalah membantu pengguna berpikir lebih objektif dan terstruktur, BUKAN memberikan jawaban langsung.
 
 Prinsip utama:
 - Ajukan pertanyaan reflektif untuk membantu pengguna mengeksplorasi alternatif
