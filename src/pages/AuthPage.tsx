@@ -108,5 +108,5 @@ export default function AuthPage() {
 }
 
 function Brand() {
-  return <><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal to-blue shadow-lg shadow-teal/20"><SparklesIcon className="h-6 w-6 text-white" /></span><span className="text-2xl font-extrabold tracking-tight text-white">Guido<span className="text-teal-300">.AI</span></span></>;
+  return <><span className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"><img src="/logo.png" alt="Guido.AI Logo" className="w-10 h-10 object-contain" /></span><span className="text-2xl font-extrabold tracking-tight text-white">Guido<span className="text-teal-300">.AI</span></span></>;
 }
