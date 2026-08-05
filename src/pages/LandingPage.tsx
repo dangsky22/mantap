@@ -4,7 +4,6 @@ import {
   ShieldCheckIcon, 
   BookOpenIcon,
   ArrowRightIcon,
-  SparklesIcon
 } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,7 +45,7 @@ export default function LandingPage() {
           {/* Left Column: Hero Text */}
           <div className="lg:col-span-7 text-left">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal/20 to-blue/20 text-teal-300 border border-teal-500/30 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 animate-pulse">
-              <SparklesIcon className="w-3.5 h-3.5 text-teal" />
+              <img src="/logo.png" alt="Guido.AI Logo" className="w-3.5 h-3.5 text-teal" />
               AI Sparring Partner Pengambilan Keputusan
             </div>
             <h2 className="text-4xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
@@ -187,7 +186,7 @@ export default function LandingPage() {
               Kenapa Guido.AI Berbeda?
             </h3>
             <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
-              Bukan chatbot biasa — Guido.AI dirancang khusus sebagai mitra refleksi logis untuk mempertajam proses berpikir Anda.
+              Bukan chatbot biasa Guido.AI dirancang khusus sebagai mitra refleksi logis untuk mempertajam proses berpikir Anda.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -255,7 +254,7 @@ export default function LandingPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5 bg-gradient-to-b from-transparent to-teal/5 relative">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="w-16 h-16 rounded-2xl bg-teal/10 flex items-center justify-center text-teal mx-auto mb-8 border border-teal/20">
-            <SparklesIcon className="w-8 h-8" />
+            <img src="/logo.png" alt="Guido.AI Logo" className="w-50 h-50 object-contain" />
           </div>
           <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Siap Membuat Keputusan yang Lebih Baik?
@@ -283,7 +282,7 @@ export default function LandingPage() {
             Mitra AI untuk Pengambilan Keputusan Tepat
           </p>
           <p className="text-xs mt-6 text-slate-600">
-            Hackathon IT FEST 6.0 2026 | Built with Human-Centered AI Principles
+            Guido.AI | Built with Human-Centered AI Principles
           </p>
         </div>
       </footer>

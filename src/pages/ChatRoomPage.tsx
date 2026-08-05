@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  CheckCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { CheckCircleIcon, XMarkIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import {
   collection,
   doc,
@@ -213,8 +210,19 @@ export default function ChatRoomPage() {
       >
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/Dashboard")}
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+              aria-label="Kembali"
+            >
+              <ArrowLeftIcon className="h-5 w-5" />
+            </button>
             <span className="grid h-10 w-10 place-items-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
-              <img src="/logo.png" alt="Guidio.AI Logo" className="h-10 w-10 object-contain" />
+              <img
+                src="/logo.png"
+                alt="Guidio.AI Logo"
+                className="h-10 w-10 object-contain"
+              />
             </span>
             <div>
               <h1 className="font-extrabold text-white">
@@ -257,7 +265,11 @@ export default function ChatRoomPage() {
         {messagesLoaded && messages.length === 0 && !isTyping && (
           <div className="mb-6 flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-5">
             <span className="flex-none w-9 h-9 rounded-xl overflow-hidden">
-              <img src="/logo.png" alt="Guido.AI" className="w-9 h-9 object-contain" />
+              <img
+                src="/logo.png"
+                alt="Guido.AI"
+                className="w-9 h-9 object-contain"
+              />
             </span>
             <p className="leading-relaxed text-slate-300">
               Konteksmu sudah diterima. Guido.AI akan memulai diskusi dari
