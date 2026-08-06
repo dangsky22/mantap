@@ -178,7 +178,7 @@ export default function DashboardPage() {
     [decisions],
   );
 
-  const displayName = userData?.nama?.trim() || "teman";
+  const displayName = userData?.nickname?.trim() || userData?.nama?.trim() || "teman";
 
   const completionRate = useMemo(() => {
     if (!sessions.length) return 0;
@@ -327,7 +327,7 @@ export default function DashboardPage() {
           </form>
 
           {/* Domain Prompts Chips (Scrollable on mobile) */}
-          <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
+          <div className="mt-4 flex items-center gap-2 flex-wrap pb-1 pt-1">
             {quickPrompts.map((prompt) => (
               <button
                 key={prompt.domain}
@@ -400,7 +400,7 @@ export default function DashboardPage() {
 
             {/* Domain Filter Tabs (Mobile-Friendly Horizontal Scroll) */}
             {activeSessions.length > 0 && (
-              <div className="mb-4 flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1">
+              <div className="mb-4 flex items-center gap-1.5 flex-wrap pb-2">
                 <button
                   onClick={() => setSelectedDomainFilter("all")}
                   className={`shrink-0 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
@@ -657,7 +657,7 @@ export default function DashboardPage() {
         className="fixed bottom-6 right-5 sm:right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-teal to-blue px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm font-bold text-white shadow-2xl shadow-teal-500/25 hover:shadow-teal-500/40 hover:-translate-y-1 transition-all duration-300"
       >
         <ChatBubbleLeftRightIcon className="h-5 w-5" />
-        <span className="hidden sm:inline">Mulai Ngewe</span>
+        <span className="hidden sm:inline">Mulai Ngobrol</span>
       </button>
     </div>
   );
