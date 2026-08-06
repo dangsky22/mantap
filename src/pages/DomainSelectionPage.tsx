@@ -82,9 +82,10 @@ export default function DomainSelectionPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser } = useAuth();
-  const problem = (location.state as { problem?: string } | null)?.problem;
+  const state = location.state as { problem?: string; domain?: DecisionDomain } | null;
+  const problem = state?.problem;
   const [selectedDomain, setSelectedDomain] = useState<DecisionDomain | null>(
-    null,
+    state?.domain || null,
   );
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState("");

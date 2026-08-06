@@ -64,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newUser: User = {
       uid: result.user.uid,
       nama: '',
+      nickname: '',
       usia: 0,
       tujuan: '',
       createdAt: new Date()

@@ -3,11 +3,14 @@ import {
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ProblemPage() {
   const navigate = useNavigate();
-  const [problem, setProblem] = useState("");
+  const location = useLocation();
+  const state = location.state as { draft?: string; problem?: string; domain?: string } | null;
+
+  const [problem, setProblem] = useState(state?.draft || state?.problem || "");
   const [error, setError] = useState("");
 
   const handleContinue = () => {
@@ -15,7 +18,9 @@ export default function ProblemPage() {
       setError("Ceritakan sedikit lebih detail, minimal 20 karakter.");
       return;
     }
-    navigate("/select-domain", { state: { problem: problem.trim() } });
+    navigate("/select-domain", {
+      state: { problem: problem.trim(), domain: state?.domain },
+    });
   };
 
   return (

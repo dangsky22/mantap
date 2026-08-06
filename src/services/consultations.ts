@@ -1,6 +1,10 @@
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { DecisionDomain } from '../types';
+
+export async function deleteSession(sessionId: string) {
+  return deleteDoc(doc(db, 'sessions', sessionId));
+}
 
 export async function createConsultation(uid: string, domain: DecisionDomain, problem: string) {
   return addDoc(collection(db, 'sessions'), {
