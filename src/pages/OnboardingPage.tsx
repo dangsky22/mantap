@@ -4,7 +4,6 @@ import {
   ArrowRightIcon,
   UserIcon,
   CalendarIcon,
-  DocumentTextIcon,
   FlagIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -18,8 +17,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     nama: "",
+    nickname: "",
     usia: "",
-    situasi: "",
     tujuan: "",
     preferensi: "",
   });
@@ -56,12 +55,6 @@ export default function OnboardingPage() {
     }
 
     if (currentStep === 2) {
-      if (!formData.situasi.trim() || formData.situasi.length < 10) {
-        newErrors.situasi = "Ceritakan situasi Anda minimal 10 karakter";
-      }
-    }
-
-    if (currentStep === 3) {
       if (!formData.tujuan.trim() || formData.tujuan.length < 10) {
         newErrors.tujuan = "Jelaskan tujuan Anda minimal 10 karakter";
       }
@@ -73,7 +66,7 @@ export default function OnboardingPage() {
 
   const handleNext = () => {
     if (validateStep(step)) {
-      if (step < 4) {
+      if (step < 3) {
         setStep(step + 1);
       } else {
         handleSubmit();
@@ -90,9 +83,9 @@ export default function OnboardingPage() {
   const handleSubmit = async () => {
     await updateUserData({
       nama: formData.nama.trim(),
+      nickname: formData.nickname.trim() || formData.nama.trim().split(" ")[0],
       usia: Number(formData.usia),
       tujuan: formData.tujuan.trim(),
-      situasi: formData.situasi.trim(),
       preferensi: formData.preferensi.trim(),
       onboardingCompleted: true,
     });
@@ -128,11 +121,11 @@ export default function OnboardingPage() {
                   Personal Context
                 </h2>
                 <span className="rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-slate-400">
-                  Langkah {step} dari 4
+                  Langkah {step} dari 3
                 </span>
               </div>
               <div className="flex gap-2">
-                {[1, 2, 3, 4].map((s) => (
+                {[1, 2, 3].map((s) => (
                   <div
                     key={s}
                     className={`h-2.5 flex-1 rounded-full transition-all ${
@@ -162,13 +155,24 @@ export default function OnboardingPage() {
                     </div>
                   </div>
 
-                  <Input
-                    label="Nama Lengkap"
-                    placeholder="Masukkan nama Anda"
-                    value={formData.nama}
-                    onChange={(e) => handleChange("nama", e.target.value)}
-                    error={errors.nama}
-                  />
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Input
+                      label="Nama Lengkap"
+                      placeholder="Masukkan nama Anda"
+                      value={formData.nama}
+                      onChange={(e) => handleChange("nama", e.target.value)}
+                      error={errors.nama}
+                    />
+
+                    <Input
+                      label="Nama Panggilan"
+                      placeholder="Masukkan nama panggilan Anda"
+                      value={formData.nickname}
+                      onChange={(e) =>
+                        handleChange("nickname", e.target.value)
+                      }
+                    />
+                  </div>
 
                   <Input
                     label="Usia"
@@ -182,43 +186,6 @@ export default function OnboardingPage() {
               )}
 
               {step === 2 && (
-                <div className="space-y-6">
-                  <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
-                    <div className="w-12 h-12 bg-blue rounded-xl flex items-center justify-center flex-shrink-0">
-                      <DocumentTextIcon className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">
-                        Situasi Anda
-                      </h3>
-                      <p className="text-sm text-slate-400">
-                        Ceritakan kondisi yang sedang Anda hadapi
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="w-full">
-                    <label className="mb-2 block text-sm font-semibold text-slate-200">
-                      Situasi Saat Ini
-                    </label>
-                    <textarea
-                      className={`min-h-[200px] w-full rounded-xl border bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 ${
-                        errors.situasi ? "border-red-500" : "border-white/10"
-                      }`}
-                      placeholder="Contoh: Saya sedang mempertimbangkan untuk pindah kerja karena merasa stagnan di posisi saat ini..."
-                      value={formData.situasi}
-                      onChange={(e) => handleChange("situasi", e.target.value)}
-                    />
-                    {errors.situasi && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.situasi}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {step === 3 && (
                 <div className="space-y-6">
                   <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-teal to-blue rounded-xl flex items-center justify-center flex-shrink-0">
@@ -255,7 +222,7 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {step === 4 && (
+              {step === 3 && (
                 <div className="space-y-6">
                   <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-blue/10 to-teal/10 p-4">
                     <div className="w-12 h-12 bg-navy rounded-xl flex items-center justify-center flex-shrink-0">
@@ -299,14 +266,14 @@ export default function OnboardingPage() {
                         <span>{formData.nama}</span>
                       </li>
                       <li className="flex gap-2">
-                        <strong className="min-w-[80px]">Usia:</strong>{" "}
-                        <span>{formData.usia} tahun</span>
+                        <strong className="min-w-[80px]">Panggilan:</strong>{" "}
+                        <span>
+                          {formData.nickname || formData.nama.split(" ")[0]}
+                        </span>
                       </li>
                       <li className="flex gap-2">
-                        <strong className="min-w-[80px]">Situasi:</strong>{" "}
-                        <span className="line-clamp-2">
-                          {formData.situasi.substring(0, 100)}...
-                        </span>
+                        <strong className="min-w-[80px]">Usia:</strong>{" "}
+                        <span>{formData.usia} tahun</span>
                       </li>
                       <li className="flex gap-2">
                         <strong className="min-w-[80px]">Tujuan:</strong>{" "}
@@ -330,7 +297,7 @@ export default function OnboardingPage() {
                 Kembali
               </Button>
               <Button onClick={handleNext} className="flex items-center gap-2">
-                {step === 4 ? "Selesai" : "Lanjut"}
+                {step === 3 ? "Selesai" : "Lanjut"}
                 <ArrowRightIcon className="w-5 h-5" />
               </Button>
             </div>

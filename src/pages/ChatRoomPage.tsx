@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircleIcon, XMarkIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  CheckCircleIcon,
+  XMarkIcon,
+  ArrowLeftIcon,
+} from "@heroicons/react/24/outline";
 import {
   collection,
   doc,
@@ -38,6 +42,7 @@ export default function ChatRoomPage() {
   const sessionId = searchParams.get("session");
   const [domain, setDomain] = useState<DecisionDomain | null>(null);
   const [problem, setProblem] = useState("");
+  const [userName, setUserName] = useState(""); // ⬅️ tambahan: nickname dari Firestore
   const [messages, setMessages] = useState<Message[]>([]);
   const [messagesLoaded, setMessagesLoaded] = useState(false); // ⬅️ tambahan: nandain snapshot pertama sudah masuk
   const [isTyping, setIsTyping] = useState(false);
@@ -46,6 +51,7 @@ export default function ChatRoomPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const introStartedRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 8);
@@ -61,7 +67,7 @@ export default function ChatRoomPage() {
     }
     let unsubscribeMessages: (() => void) | undefined;
     getDoc(doc(db, "sessions", sessionId))
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         const data = snapshot.data();
         if (!snapshot.exists() || data?.uid !== currentUser.uid) {
           navigate("/select-domain", { replace: true });
@@ -69,6 +75,12 @@ export default function ChatRoomPage() {
         }
         setDomain(data.domain as DecisionDomain);
         setProblem(data.problem || "");
+
+        // ⬅️ tambahan: ambil nama panggilan dari Firestore
+        const userSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const userData = userSnap.data();
+        setUserName(userData?.nickname || "");
+
         unsubscribeMessages = onSnapshot(
           query(
             collection(db, "messages"),
@@ -130,6 +142,8 @@ export default function ChatRoomPage() {
           ],
           domain,
           problem,
+          undefined,
+          userName, // ⬅️ tambahan
         );
         await saveMessage(sessionId, "ai", result.response, result.explanation);
       } catch (err) {
@@ -143,12 +157,22 @@ export default function ChatRoomPage() {
       }
     };
     void startConversation();
-  }, [domain, messages.length, messagesLoaded, problem, sessionId]);
+  }, [domain, messages.length, messagesLoaded, problem, sessionId, userName]);
+
+  const handleStopGenerating = () => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    setIsTyping(false);
+  };
 
   const handleSendMessage = async (content: string) => {
     if (!sessionId || !domain) return;
     setError("");
     setIsTyping(true);
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       await saveMessage(sessionId, "user", content);
       const pendingMessage: Message = {
@@ -167,9 +191,18 @@ export default function ChatRoomPage() {
           timestamp: message.timestamp,
         }),
       );
-      const result = await sendMessageToGemini(history, domain, problem);
+      const result = await sendMessageToGemini(
+        history,
+        domain,
+        problem,
+        controller.signal,
+        userName, // ⬅️ tambahan
+      );
+      if (controller.signal.aborted) return;
+
       await saveMessage(sessionId, "ai", result.response, result.explanation);
     } catch (err) {
+      if (controller.signal.aborted) return;
       console.error("Chat request failed:", err);
       setError(
         "Pesan belum terkirim atau Guidio.AI belum bisa merespons. Periksa API key Gemini dan coba lagi.",
@@ -293,6 +326,8 @@ export default function ChatRoomPage() {
           <ChatInput
             onSend={handleSendMessage}
             disabled={isTyping}
+            onStop={handleStopGenerating}
+            isTyping={isTyping}
             placeholder="Ceritakan situasi atau pilihan yang sedang kamu pertimbangkan..."
           />
         </div>

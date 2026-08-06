@@ -14,10 +14,13 @@ export async function sendMessageToGemini(
   messages: Message[],
   domain: DecisionDomain,
   userContext?: string,
+  signal?: AbortSignal, // ⬅️ tambahan: buat fitur stop/cancel di ChatRoomPage
+  userName?: string, // ⬅️ tambahan: nama panggilan dari Firestore
 ): Promise<GeminiResponse> {
   const systemPrompt =
     getSystemPrompt(domain) +
-    (userContext ? `\n\nKonteks pengguna: ${userContext}` : "");
+    (userContext ? `\n\nKonteks pengguna: ${userContext}` : "") +
+    (userName ? `\n\nNama panggilan pengguna: ${userName}.` : ""); // ⬅️ tambahan
 
   const conversationHistory = messages.map((msg) => ({
     role: msg.role === "user" ? "user" : "model",
@@ -27,6 +30,7 @@ export async function sendMessageToGemini(
   const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    signal, // ⬅️ tambahan
     body: JSON.stringify({
       // systemInstruction dipisah dari contents, bukan disisipin sebagai "user" turn.
       // Sebelumnya ini bisa bikin dua giliran "user" beruntun kalau history dimulai dari user.
@@ -88,7 +92,7 @@ export async function sendMessageToGemini(
     "Maaf, saya tidak bisa merespons saat ini.";
 
   const explanation = extractExplanation(rawText);
-  const text = rawText.replace(/\n?\[Penjelasan:.+?\]\s*$/s, '').trim();
+  const text = rawText.replace(/\n?\[Penjelasan:.+?\]\s*$/s, "").trim();
 
   return {
     response: text,
@@ -105,6 +109,7 @@ Prinsip utama:
 - Berikan insight dengan SELALU menjelaskan alasan di baliknya (explainability)
 - Keputusan akhir SELALU di tangan pengguna
 - Gunakan bahasa Indonesia yang natural dan empatis
+- Jika nama panggilan pengguna diberikan, selipkan sesekali di tengah kalimat secara alami (misal: "Kalau dilihat dari ceritamu, [nama]..." atau "Menurutku, [nama], ada dua hal yang perlu dipikirkan..."), BUKAN selalu di awal sebagai sapaan seperti "Halo, [nama]". Jangan pakai nama itu di setiap respons — cukup sesekali saat terasa pas, supaya tidak terdengar seperti template.
 
 Guardrail anti-bias dan keselamatan:
 - Jangan memilihkan keputusan atau menggunakan kalimat direktif seperti "kamu harus". Gunakan bahasa probabilistik seperti "mungkin", "perlu dipertimbangkan", atau "salah satu opsi".

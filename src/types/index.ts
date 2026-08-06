@@ -1,6 +1,7 @@
 export interface User {
   uid: string;
   nama: string;
+  nickname: string;
   usia: number;
   tujuan: string;
   createdAt: Date;
