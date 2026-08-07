@@ -1,6 +1,6 @@
 import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
-import { DecisionDomain } from '../types';
+import { Alternative, DecisionDomain } from '../types';
 
 export async function deleteSession(sessionId: string) {
   return deleteDoc(doc(db, 'sessions', sessionId));
@@ -22,12 +22,14 @@ export async function saveMessage(
   role: 'user' | 'ai',
   content: string,
   explanation?: string,
+  alternatives?: Alternative[],
 ) {
   await addDoc(collection(db, 'messages'), {
     sessionId,
     role,
     content,
     ...(explanation ? { explanation } : {}),
+    ...(alternatives && alternatives.length > 0 ? { alternatives } : {}),
     timestamp: serverTimestamp(),
   });
   await updateDoc(doc(db, 'sessions', sessionId), { updatedAt: serverTimestamp() });

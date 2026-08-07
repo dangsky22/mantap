@@ -1,4 +1,4 @@
-import { DecisionDomain, Message } from "../types";
+import { Alternative, DecisionDomain, Message } from "../types";
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 // Model lama "gemini-pro" udah shutdown (404). Pakai alias -latest biar auto-update.
@@ -8,6 +8,7 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
 export interface GeminiResponse {
   response: string;
   explanation?: string;
+  alternatives?: Alternative[];
 }
 
 export async function sendMessageToGemini(
@@ -92,11 +93,16 @@ export async function sendMessageToGemini(
     "Maaf, saya tidak bisa merespons saat ini.";
 
   const explanation = extractExplanation(rawText);
-  const text = rawText.replace(/\n?\[Penjelasan:.+?\]\s*$/s, "").trim();
+  const alternatives = extractAlternatives(rawText);
+  const text = rawText
+    .replace(/\n?\[Alternatives:[\s\S]+?\]\s*/g, "")
+    .replace(/\n?\[Penjelasan:.+?\]\s*$/s, "")
+    .trim();
 
   return {
     response: text,
     explanation,
+    alternatives,
   };
 }
 
@@ -128,7 +134,19 @@ Batasan domain (PENTING):
 
 Format respons:
 - Berikan respons utama yang singkat, jelas, dan mudah dibaca.
-- Akhiri SELALU dengan baris terpisah persis seperti ini: [Penjelasan: alasan netral mengapa pertanyaan atau insight tersebut relevan berdasarkan konteks pengguna.]`;
+- Akhiri SELALU dengan baris terpisah persis seperti ini: [Penjelasan: alasan netral mengapa pertanyaan atau insight tersebut relevan berdasarkan konteks pengguna.]
+- HANYA generate blok [Alternatives:] jika semua kondisi berikut terpenuhi:
+  1. Percakapan sudah berlangsung minimal 3-4 giliran (bukan awal diskusi)
+  2. User sudah mengklarifikasi konteks, nilai, dan constraint-nya
+  3. User EKSPLISIT menanyakan perbandingan opsi ATAU sudah siap mempertimbangkan keputusan final
+  4. Ada 2-3 alternatif konkret yang layak dibandingkan secara objektif
+  JANGAN generate [Alternatives:] di awal percakapan atau saat masih tahap eksplorasi/klarifikasi.
+  Format blok (hanya jika kondisi terpenuhi):
+  [Alternatives:
+  1. Nama Opsi A | Pro: keuntungan 1, keuntungan 2 | Con: kerugian 1, kerugian 2 | Score: 7
+  2. Nama Opsi B | Pro: keuntungan 1, keuntungan 2 | Con: kerugian 1, kerugian 2 | Score: 8
+  ]
+  Score adalah penilaian objektif 1-10 berdasarkan konteks pengguna.`;
 
   const domainSpecific = {
     karier:
@@ -147,4 +165,53 @@ Format respons:
 function extractExplanation(text: string): string | undefined {
   const explanationMatch = text.match(/\[Penjelasan:(.+?)\]/s);
   return explanationMatch ? explanationMatch[1].trim() : undefined;
+}
+
+function extractAlternatives(text: string): Alternative[] | undefined {
+  const altMatch = text.match(/\[Alternatives:\s*([\s\S]+?)\]/);
+  if (!altMatch) return undefined;
+
+  const lines = altMatch[1]
+    .trim()
+    .split("\n")
+    .filter((line) => line.trim());
+
+  const alternatives: Alternative[] = [];
+  for (const line of lines) {
+    // Format: "1. Nama Opsi | Pro: x, y | Con: a, b | Score: 7"
+    const parts = line.split("|").map((p) => p.trim());
+    if (parts.length < 3) continue;
+
+    const nameMatch = parts[0].match(/^\d+\.\s*(.+)$/);
+    const name = nameMatch ? nameMatch[1].trim() : parts[0].trim();
+
+    const proMatch = parts.find((p) => p.startsWith("Pro:"));
+    const pros = proMatch
+      ? proMatch
+          .replace(/^Pro:\s*/, "")
+          .split(",")
+          .map((p) => p.trim())
+          .filter(Boolean)
+      : [];
+
+    const conMatch = parts.find((p) => p.startsWith("Con:"));
+    const cons = conMatch
+      ? conMatch
+          .replace(/^Con:\s*/, "")
+          .split(",")
+          .map((c) => c.trim())
+          .filter(Boolean)
+      : [];
+
+    const scoreMatch = parts.find((p) => p.startsWith("Score:"));
+    const score = scoreMatch
+      ? parseInt(scoreMatch.replace(/^Score:\s*/, "").trim())
+      : undefined;
+
+    if (name) {
+      alternatives.push({ name, pros, cons, score });
+    }
+  }
+
+  return alternatives.length > 0 ? alternatives : undefined;
 }

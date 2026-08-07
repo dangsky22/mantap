@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { LightBulbIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { Alternative } from '../../types';
+import { ComparisonMatrix } from '../decision/ComparisonMatrix';
 
 interface ChatMessageProps {
   role: 'user' | 'ai';
   content: string;
   explanation?: string;
+  alternatives?: Alternative[];
   timestamp: Date;
 }
 
-export function ChatMessage({ role, content, explanation, timestamp }: ChatMessageProps) {
+export function ChatMessage({ role, content, explanation, alternatives, timestamp }: ChatMessageProps) {
   const [showExplanation, setShowExplanation] = useState(false);
   const isAI = role === 'ai';
 
@@ -24,11 +27,15 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
         <div
           className={`rounded-2xl px-5 py-3.5 shadow-sm transition-all duration-300 hover:shadow-md ${
             isAI
-              ? 'border border-white/10 bg-white/5 text-slate-200 shadow-none hover:border-white/20 hover:bg-white/[0.07]'
-              : 'bg-gradient-to-br from-teal to-blue text-white shadow-lg shadow-teal-950/30 hover:shadow-xl hover:shadow-teal-950/40'
+              ? "border border-white/10 bg-white/5 text-slate-200 shadow-none hover:border-white/20 hover:bg-white/[0.07]"
+              : "bg-gradient-to-br from-teal to-blue text-white shadow-lg shadow-teal-950/30 hover:shadow-xl hover:shadow-teal-950/40"
           }`}
         >
           <div className="whitespace-pre-wrap leading-relaxed">{renderMarkdown(content)}</div>
+          
+          {isAI && alternatives && alternatives.length > 0 && (
+            <ComparisonMatrix alternatives={alternatives} />
+          )}
         </div>
         
         {isAI && explanation && (

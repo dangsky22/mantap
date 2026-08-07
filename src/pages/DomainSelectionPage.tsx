@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { createConsultation } from "../services/consultations";
+import { suggestDomain } from "../services/domainClassifier";
 
 type DecisionDomain = "karier" | "pendidikan" | "relasi" | "finansial";
 
@@ -87,12 +88,20 @@ export default function DomainSelectionPage() {
   const [selectedDomain, setSelectedDomain] = useState<DecisionDomain | null>(
     state?.domain || null,
   );
+  const [suggestedDomain, setSuggestedDomain] = useState<DecisionDomain | null>(null);
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!problem) navigate("/problem", { replace: true });
-  }, [navigate, problem]);
+    
+    // Auto-suggest domain based on problem text
+    if (problem && !state?.domain) {
+      suggestDomain(problem).then((suggested) => {
+        if (suggested) setSuggestedDomain(suggested);
+      });
+    }
+  }, [navigate, problem, state?.domain]);
 
   const handleSelectDomain = (domain: DecisionDomain) => {
     setSelectedDomain(domain);
@@ -155,6 +164,12 @@ export default function DomainSelectionPage() {
             Dari ceritamu, domain mana yang paling relevan? Guido.AI akan
             menyesuaikan pertanyaan dan kerangka berpikirnya.
           </p>
+          {!suggestedDomain && (
+            <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-sm text-slate-400">
+              <SparklesIcon className="h-4 w-4 animate-pulse" />
+              AI sedang menganalisis ceritamu untuk menyarankan domain...
+            </p>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -163,6 +178,7 @@ export default function DomainSelectionPage() {
               key={domain.id}
               domain={domain}
               isSelected={selectedDomain === domain.id}
+              isSuggested={suggestedDomain === domain.id}
               onSelect={() => handleSelectDomain(domain.id)}
             />
           ))}
@@ -196,10 +212,11 @@ export default function DomainSelectionPage() {
 interface DomainCardProps {
   domain: DomainOption;
   isSelected: boolean;
+  isSuggested: boolean;
   onSelect: () => void;
 }
 
-function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
+function DomainCard({ domain, isSelected, isSuggested, onSelect }: DomainCardProps) {
   const getColorClasses = () => {
     switch (domain.color) {
       case "blue":
@@ -250,12 +267,18 @@ function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
   return (
     <button
       onClick={onSelect}
-      className={`rounded-2xl bg-white/5 p-6 text-left transition-all hover:-translate-y-1 hover:bg-white/[0.08] border ${
+      className={`relative rounded-2xl bg-white/5 p-6 text-left transition-all hover:-translate-y-1 hover:bg-white/[0.08] border ${
         isSelected
           ? `${colors.border} shadow-lg ring-4 ring-opacity-20 ${colors.ring}`
           : "border-white/10 hover:border-white/20"
       }`}
     >
+      {isSuggested && !isSelected && (
+        <div className="absolute -top-2 -right-2 z-10 flex items-center gap-1 rounded-full bg-gradient-to-r from-teal to-blue px-2.5 py-1 text-[10px] font-bold text-white shadow-lg animate-pulse">
+          <SparklesIcon className="h-3 w-3" />
+          <span>Disarankan</span>
+        </div>
+      )}
       <div className="flex items-start gap-4 mb-4">
         <div className={`${colors.icon} flex-shrink-0`}>{domain.icon}</div>
         <div className="flex-1">

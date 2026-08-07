@@ -26,6 +26,7 @@ interface Message {
   role: "user" | "ai";
   content: string;
   explanation?: string;
+  alternatives?: { name: string; pros: string[]; cons: string[]; score?: number }[];
   timestamp: Date;
 }
 const domainLabels: Record<DecisionDomain, string> = {
@@ -97,6 +98,7 @@ export default function ChatRoomPage() {
                     role: message.role,
                     content: message.content,
                     explanation: message.explanation,
+                    alternatives: message.alternatives,
                     timestamp: message.timestamp?.toDate?.() || new Date(),
                   } as Message;
                 })
@@ -146,7 +148,7 @@ export default function ChatRoomPage() {
           undefined,
           userName,
         );
-        await saveMessage(sessionId, "ai", result.response, result.explanation);
+        await saveMessage(sessionId, "ai", result.response, result.explanation, result.alternatives);
         generateQuickReplies(result.response);
       } catch (err) {
         console.error("Initial AI response failed:", err);
@@ -203,7 +205,7 @@ export default function ChatRoomPage() {
       );
       if (controller.signal.aborted) return;
 
-      await saveMessage(sessionId, "ai", result.response, result.explanation);
+      await saveMessage(sessionId, "ai", result.response, result.explanation, result.alternatives);
       
       generateQuickReplies(result.response);
     } catch (err) {
@@ -366,6 +368,9 @@ export default function ChatRoomPage() {
         <ConfirmationModal
           onClose={() => setShowConfirmation(false)}
           onConfirm={handleFinalizeDecision}
+          lastAlternatives={[...messages]
+            .reverse()
+            .find((m) => m.role === "ai" && m.alternatives)?.alternatives}
         />
       )}
     </div>
@@ -375,12 +380,28 @@ export default function ChatRoomPage() {
 function ConfirmationModal({
   onClose,
   onConfirm,
+  lastAlternatives,
 }: {
   onClose: () => void;
   onConfirm: (decision: string, reasoning: string) => void;
+  lastAlternatives?: { name: string; pros: string[]; cons: string[]; score?: number }[];
 }) {
-  const [decision, setDecision] = useState("");
-  const [reasoning, setReasoning] = useState("");
+  const sorted = lastAlternatives?.sort((a, b) => (b.score || 0) - (a.score || 0)) || [];
+  const topScore = sorted[0]?.score || 0;
+  const topAlternatives = sorted.filter((a) => a.score === topScore);
+  const isTie = topAlternatives.length > 1;
+  const topAlternative = isTie ? null : sorted[0];
+  
+  const [decision, setDecision] = useState(
+    isTie ? "" : (topAlternative?.name || "")
+  );
+  const [reasoning, setReasoning] = useState(
+    isTie 
+      ? `Beberapa opsi memiliki score yang sama (${topScore}/10). Pertimbangkan prioritas dan nilai pribadimu.`
+      : topAlternative?.pros?.length
+        ? `Setelah mempertimbangkan: ${topAlternative.pros.slice(0, 2).join(", ")}.`
+        : ""
+  );
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
       <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#101722] p-5 sm:p-8 shadow-2xl">
@@ -394,6 +415,16 @@ function ConfirmationModal({
             </h2>
             <p className="mt-2 text-sm text-slate-400">
               Keputusan ini disimpan ke Decision Journal milikmu.
+              {!isTie && topAlternative && (
+                <span className="mt-1 block text-xs text-teal-300">
+                  💡 Saran berdasarkan diskusi kita. Kamu bisa ubah sesuai pilihanmu.
+                </span>
+              )}
+              {isTie && (
+                <span className="mt-1 block text-xs text-amber-300">
+                  ⚠️ Beberapa opsi memiliki score yang sama. Pilih berdasarkan prioritas pribadimu.
+                </span>
+              )}
             </p>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-white">
