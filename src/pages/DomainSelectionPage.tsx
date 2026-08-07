@@ -135,7 +135,7 @@ export default function DomainSelectionPage() {
                 className="h-10 w-10 object-contain"
               />
             </span>
-            <h1 className="text-2xl font-extrabold text-white">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white">
               Guido<span className="text-teal-300">.AI</span>
             </h1>
           </div>
@@ -259,7 +259,7 @@ function DomainCard({ domain, isSelected, onSelect }: DomainCardProps) {
       <div className="flex items-start gap-4 mb-4">
         <div className={`${colors.icon} flex-shrink-0`}>{domain.icon}</div>
         <div className="flex-1">
-          <h3 className="text-2xl font-bold text-white mb-2">{domain.title}</h3>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{domain.title}</h3>
           <p className="text-slate-400 text-sm">{domain.description}</p>
         </div>
         {isSelected && (

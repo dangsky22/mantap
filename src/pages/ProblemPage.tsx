@@ -34,7 +34,7 @@ export default function ProblemPage() {
             className="h-10 w-10 object-contain"
           />
         </span>
-        <h1 className="text-xl font-extrabold">
+        <h1 className="text-lg sm:text-xl font-extrabold">
           Guidio<span className="text-teal-300">.AI</span>
         </h1>
       </nav>
@@ -43,7 +43,7 @@ export default function ProblemPage() {
           <ChatBubbleBottomCenterTextIcon className="h-4 w-4" /> MULAI DARI
           CERITAMU
         </span>
-        <h2 className="mt-6 text-3xl font-bold tracking-tight text-white">
+        <h2 className="mt-6 text-2xl sm:text-3xl font-bold tracking-tight text-white">
           Masalah apa yang sedang kamu hadapi?
         </h2>
         <p className="mt-3 leading-relaxed text-slate-400">

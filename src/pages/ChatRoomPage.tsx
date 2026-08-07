@@ -13,7 +13,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChatInput, ChatMessage } from "../components/chat";
+import { ChatInput, ChatMessage, TypingIndicator, QuickReplies } from "../components/chat";
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../hooks/useAuth";
 import { saveDecision, saveMessage } from "../services/consultations";
@@ -49,6 +49,7 @@ export default function ChatRoomPage() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [error, setError] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [quickReplies, setQuickReplies] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const introStartedRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -143,9 +144,10 @@ export default function ChatRoomPage() {
           domain,
           problem,
           undefined,
-          userName, // ⬅️ tambahan
+          userName,
         );
         await saveMessage(sessionId, "ai", result.response, result.explanation);
+        generateQuickReplies(result.response);
       } catch (err) {
         console.error("Initial AI response failed:", err);
         setError(
@@ -169,6 +171,7 @@ export default function ChatRoomPage() {
     if (!sessionId || !domain) return;
     setError("");
     setIsTyping(true);
+    setQuickReplies([]);
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -196,11 +199,13 @@ export default function ChatRoomPage() {
         domain,
         problem,
         controller.signal,
-        userName, // ⬅️ tambahan
+        userName,
       );
       if (controller.signal.aborted) return;
 
       await saveMessage(sessionId, "ai", result.response, result.explanation);
+      
+      generateQuickReplies(result.response);
     } catch (err) {
       if (controller.signal.aborted) return;
       console.error("Chat request failed:", err);
@@ -210,6 +215,29 @@ export default function ChatRoomPage() {
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const generateQuickReplies = (aiResponse: string) => {
+    const replies: string[] = [];
+    
+    if (aiResponse.includes("?")) {
+      replies.push("Bisa jelaskan lebih detail?");
+      replies.push("Saya sudah cukup paham");
+    }
+    
+    if (aiResponse.toLowerCase().includes("alternatif") || aiResponse.toLowerCase().includes("opsi")) {
+      replies.push("Tolong bantu saya bandingkan");
+    }
+    
+    if (aiResponse.toLowerCase().includes("konsekuensi") || aiResponse.toLowerCase().includes("risiko")) {
+      replies.push("Apa risiko terbesarnya?");
+    }
+    
+    if (replies.length === 0) {
+      replies.push("Lanjutkan", "Saya ingin tahu lebih banyak");
+    }
+    
+    setQuickReplies(replies.slice(0, 3));
   };
 
   const handleFinalizeDecision = async (
@@ -313,15 +341,17 @@ export default function ChatRoomPage() {
         {messages.map((message) => (
           <ChatMessage key={message.id} {...message} />
         ))}
-        {isTyping && (
-          <div className="mb-5 flex items-center gap-3 text-sm text-slate-400">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-teal-300" />
-            Guidio.AI sedang menyusun pertanyaan...
-          </div>
+        {isTyping && <TypingIndicator userName="Guidio.AI" />}
+        {!isTyping && quickReplies.length > 0 && (
+          <QuickReplies
+            suggestions={quickReplies}
+            onSelect={handleSendMessage}
+            disabled={isTyping}
+          />
         )}
         <div ref={messagesEndRef} />
       </main>
-      <div className="sticky bottom-0 border-t border-white/10 bg-[#080B10]/95 backdrop-blur">
+      <div className="sticky bottom-0 border-t border-white/10 bg-[#080B10]/95 backdrop-blur px-4 sm:px-6">
         <div className="mx-auto max-w-5xl">
           <ChatInput
             onSend={handleSendMessage}
@@ -353,13 +383,13 @@ function ConfirmationModal({
   const [reasoning, setReasoning] = useState("");
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
-      <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#101722] p-6 shadow-2xl sm:p-8">
+      <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#101722] p-5 sm:p-8 shadow-2xl">
         <div className="flex justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-teal-300">
               KEPUTUSAN FINAL
             </p>
-            <h2 className="mt-1 text-2xl font-bold text-white">
+            <h2 className="mt-1 text-xl sm:text-2xl font-bold text-white">
               Apa pilihanmu?
             </h2>
             <p className="mt-2 text-sm text-slate-400">

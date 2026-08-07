@@ -105,7 +105,7 @@ export default function OnboardingPage() {
                 className="h-10 w-10 object-contain"
               />
             </span>
-            <h1 className="text-2xl font-extrabold text-white">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white">
               Guidio<span className="text-teal-300">.AI</span>
             </h1>
           </div>
@@ -117,7 +117,7 @@ export default function OnboardingPage() {
           <div className="relative rounded-2xl border border-white/10 bg-[#101722]/90 p-8 shadow-2xl shadow-black/30 md:p-12">
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-white">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white">
                   Personal Context
                 </h2>
                 <span className="rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-slate-400">
@@ -142,11 +142,11 @@ export default function OnboardingPage() {
               {step === 1 && (
                 <div className="space-y-6">
                   <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
-                    <div className="w-12 h-12 bg-teal rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-teal rounded-xl flex items-center justify-center flex-shrink-0">
                       <UserIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-lg sm:text-xl font-bold text-white">
                         Perkenalan
                       </h3>
                       <p className="text-sm text-slate-400">
@@ -188,11 +188,11 @@ export default function OnboardingPage() {
               {step === 2 && (
                 <div className="space-y-6">
                   <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-teal/10 to-blue/10 p-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal to-blue rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal to-blue rounded-xl flex items-center justify-center flex-shrink-0">
                       <FlagIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-lg sm:text-xl font-bold text-white">
                         Tujuan Anda
                       </h3>
                       <p className="text-sm text-slate-400">
@@ -225,11 +225,11 @@ export default function OnboardingPage() {
               {step === 3 && (
                 <div className="space-y-6">
                   <div className="mb-6 flex items-center gap-4 rounded-xl border border-teal-400/15 bg-gradient-to-r from-blue/10 to-teal/10 p-4">
-                    <div className="w-12 h-12 bg-navy rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-navy rounded-xl flex items-center justify-center flex-shrink-0">
                       <CalendarIcon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-lg sm:text-xl font-bold text-white">
                         Preferensi (Opsional)
                       </h3>
                       <p className="text-sm text-slate-400">

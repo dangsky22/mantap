@@ -13,7 +13,7 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
   const isAI = role === 'ai';
 
   return (
-    <div className={`flex gap-4 ${isAI ? 'justify-start' : 'justify-end'} mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+    <div className={`flex gap-4 ${isAI ? 'justify-start' : 'justify-end'} mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500`}>
       {isAI && (
         <div className="flex-shrink-0 w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-teal/20">
           <img src="/logo.png" alt="Guido.AI" className="w-10 h-10 object-contain" />
@@ -22,10 +22,10 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
       
       <div className={`max-w-[85%] sm:max-w-[80%] lg:max-w-[75%] ${isAI ? 'order-2' : 'order-1'}`}>
         <div
-          className={`rounded-2xl px-5 py-3.5 shadow-sm ${
+          className={`rounded-2xl px-5 py-3.5 shadow-sm transition-all duration-300 hover:shadow-md ${
             isAI
-              ? 'border border-white/10 bg-white/5 text-slate-200 shadow-none'
-              : 'bg-gradient-to-br from-teal to-blue text-white shadow-lg shadow-teal-950/30'
+              ? 'border border-white/10 bg-white/5 text-slate-200 shadow-none hover:border-white/20 hover:bg-white/[0.07]'
+              : 'bg-gradient-to-br from-teal to-blue text-white shadow-lg shadow-teal-950/30 hover:shadow-xl hover:shadow-teal-950/40'
           }`}
         >
           <div className="whitespace-pre-wrap leading-relaxed">{renderMarkdown(content)}</div>
@@ -35,14 +35,14 @@ export function ChatMessage({ role, content, explanation, timestamp }: ChatMessa
           <div className="mt-3">
             <button
               onClick={() => setShowExplanation(!showExplanation)}
-              className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-bold text-teal-300 transition hover:bg-teal/10 hover:text-teal-200"
+              className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-bold text-teal-300 transition-all hover:bg-teal/10 hover:text-teal-200 hover:scale-105 active:scale-95"
             >
-              <LightBulbIcon className="w-4 h-4" />
+              <LightBulbIcon className={`w-4 h-4 transition-transform ${showExplanation ? 'rotate-12' : ''}`} />
               <span>Kenapa saran ini?</span>
               {showExplanation ? (
-                <ChevronUpIcon className="w-4 h-4" />
+                <ChevronUpIcon className="w-4 h-4 transition-transform" />
               ) : (
-                <ChevronDownIcon className="w-4 h-4" />
+                <ChevronDownIcon className="w-4 h-4 transition-transform" />
               )}
             </button>
             

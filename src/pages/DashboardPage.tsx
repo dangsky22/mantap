@@ -15,6 +15,20 @@ import {
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  DecisionRadarChart,
+  DomainActivityChart,
+} from "../components/decision/DecisionCharts";
+import { ActivityTimeline } from "../components/decision/ActivityTimeline";
+import {
+  InsightGrid,
+} from "../components/decision/InsightCards";
+import {
+  DEMO_SESSIONS,
+  DEMO_DECISIONS,
+  DEMO_DOMAIN_STATS,
+  DEMO_ACTIVITY,
+} from "../data/mockData";
 import { useAuth } from "../hooks/useAuth";
 import { deleteSession } from "../services/consultations";
 import { db } from "../services/firebase";
@@ -63,16 +77,28 @@ const quickPrompts: { domain: DecisionDomain; text: string }[] = [
   { domain: "pendidikan", text: "Lanjut S2 sekarang atau kerja dulu?" },
 ];
 
-function formatTimestamp(timestamp?: { toDate: () => Date }) {
+function formatTimestamp(timestamp?: any) {
   if (!timestamp) return "Baru saja";
-  const date = timestamp.toDate();
-  return date.toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  if (typeof timestamp.toDate === "function") {
+    const date = timestamp.toDate();
+    return date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+  if (timestamp instanceof Date) {
+    return timestamp.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+  return "Baru saja";
 }
 
 export default function DashboardPage() {
@@ -92,8 +118,11 @@ export default function DashboardPage() {
 
   // Deletion modal state & dropdown menu state
   const [activeMenuSessionId, setActiveMenuSessionId] = useState<string | null>(null);
-  const [sessionToDelete, setSessionToDelete] = useState<SessionItem | null>(null);
+  const [sessionToDelete, setSessionToDelete] = useState<any>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Demo mode toggle untuk showcase hackathon (default OFF - hanya manual toggle)
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -185,6 +214,64 @@ export default function DashboardPage() {
     return Math.round((decisions.length / sessions.length) * 100);
   }, [sessions.length, decisions.length]);
 
+  // Derived domain stats untuk chart & insights (dari data real / demo)
+  const domainStats = useMemo(() => {
+    const domains: DecisionDomain[] = [
+      "karier",
+      "pendidikan",
+      "relasi",
+      "finansial",
+    ];
+    if (isDemoMode) {
+      return DEMO_DOMAIN_STATS.map((s) => ({
+        domain: s.domain,
+        total: s.totalSessions,
+        completed: s.completedSessions,
+        avgConfidence: s.avgConfidence,
+        avgDecisionTime: s.avgDecisionTime,
+      }));
+    }
+    return domains
+      .map((domain) => {
+        const domainSessions = sessions.filter((s) => s.domain === domain);
+        return {
+          domain,
+          total: domainSessions.length,
+          completed: domainSessions.filter(
+            (s) => s.status === "completed",
+          ).length,
+          avgConfidence: 7.5,
+          avgDecisionTime: 5.0,
+        };
+      })
+      .filter((d) => d.total > 0);
+  }, [isDemoMode, sessions]);
+
+  // Activity timeline data (real atau demo)
+  const activityEvents = useMemo(() => {
+    if (isDemoMode) {
+      return DEMO_ACTIVITY.map((e) => ({
+        id: e.id,
+        type: e.type as any,
+        domain: e.domain,
+        title: e.title,
+        description: e.description,
+        timestamp: new Date(e.timestamp),
+      }));
+    }
+    return sessions
+      .map((s) => ({
+        id: `${s.id}-activity`,
+        type: "session_started" as any,
+        domain: s.domain,
+        title: s.status === "completed" ? "Sesi selesai" : "Sesi baru dimulai",
+        description: s.problem,
+        timestamp: s.updatedAt?.toDate?.() || new Date(),
+      }))
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+      .slice(0, 6);
+  }, [isDemoMode, sessions]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -258,6 +345,18 @@ export default function DashboardPage() {
           </Link>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => setIsDemoMode(!isDemoMode)}
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-all ${
+                isDemoMode
+                  ? "border-teal/40 bg-teal/20 text-teal-300"
+                  : "border-white/10 bg-white/5 text-slate-300 hover:border-teal/30 hover:bg-teal/10 hover:text-teal-300"
+              }`}
+              title={isDemoMode ? "Kembali ke data real" : "Preview dengan demo data"}
+            >
+              <SparklesIcon className="h-4 w-4" />
+              <span>{isDemoMode ? "Real Data" : "Demo"}</span>
+            </button>
+            <button
               onClick={() => navigate("/problem")}
               className="relative flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal to-blue hover:from-teal/90 hover:to-blue/90 px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-bold shadow-lg shadow-teal-500/10 hover:shadow-teal-500/20 transition-all hover:-translate-y-0.5"
             >
@@ -285,7 +384,7 @@ export default function DashboardPage() {
       <section className="relative mx-auto max-w-6xl px-4 py-8 sm:py-12 sm:px-6 z-10">
         {/* Hero Welcome Banner */}
         <div className="relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-xl shadow-2xl overflow-hidden">
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 text-5xl sm:text-6xl opacity-15 select-none pointer-events-none">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 text-4xl sm:text-5xl lg:text-6xl opacity-15 select-none pointer-events-none">
             🧠
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-400/30 bg-teal/10 px-3 py-1 text-[10px] sm:text-xs font-bold tracking-widest text-teal-300 uppercase">
@@ -349,7 +448,7 @@ export default function DashboardPage() {
               Sesi Berjalan
             </p>
             <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-extrabold text-white">
-              {activeSessions.length}
+              {isDemoMode ? DEMO_SESSIONS.filter((s) => s.status === "active").length : activeSessions.length}
             </p>
           </div>
           <div className="rounded-2xl border border-white/5 bg-white/[0.015] p-4 sm:p-5 backdrop-blur-sm relative group hover:border-teal/20 transition-colors">
@@ -358,7 +457,7 @@ export default function DashboardPage() {
               Keputusan Final
             </p>
             <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-extrabold text-teal-300">
-              {decisions.length}
+              {isDemoMode ? DEMO_DECISIONS.length : decisions.length}
             </p>
           </div>
           <div className="rounded-2xl border border-white/5 bg-white/[0.015] p-4 sm:p-5 backdrop-blur-sm col-span-2 sm:col-span-1 relative group hover:border-blue/20 transition-colors">
@@ -367,10 +466,29 @@ export default function DashboardPage() {
               Completion Rate
             </p>
             <p className="mt-1.5 sm:mt-2 text-2xl sm:text-3xl font-extrabold text-blue-400">
-              {completionRate}%
+              {isDemoMode
+                ? Math.round(
+                    (DEMO_DECISIONS.length /
+                      DEMO_SESSIONS.length) *
+                      100,
+                  )
+                : completionRate}%
             </p>
           </div>
         </div>
+
+        {/* Insights Grid - New Analytics Section */}
+        {(domainStats.length > 0 || isDemoMode) && (
+          <div className="mt-6 sm:mt-8">
+            <h2 className="mb-4 flex items-center gap-2 text-base sm:text-lg font-bold text-white tracking-tight">
+              <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+                <SparklesIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              </span>
+              Decision Insights
+            </h2>
+            <InsightGrid stats={domainStats} />
+          </div>
+        )}
 
         {error && (
           <div
@@ -379,6 +497,26 @@ export default function DashboardPage() {
           >
             <ExclamationTriangleIcon className="h-5 w-5 text-red-400 shrink-0" />
             <span>{error}</span>
+          </div>
+        )}
+
+        {/* Visualization Charts Section - NEW */}
+        {(domainStats.length >= 2 || isDemoMode) && (
+          <div className="mt-10 sm:mt-12 grid gap-6 lg:grid-cols-2">
+            <div className="rounded-2xl border border-white/5 bg-white/[0.015] p-5 sm:p-6 backdrop-blur-sm">
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
+                <span className="h-2 w-2 rounded-full bg-teal-400" />
+                Confidence Score per Domain
+              </h3>
+              <DecisionRadarChart data={domainStats} />
+            </div>
+            <div className="rounded-2xl border border-white/5 bg-white/[0.015] p-5 sm:p-6 backdrop-blur-sm">
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
+                <span className="h-2 w-2 rounded-full bg-blue-400" />
+                Domain Activity Breakdown
+              </h3>
+              <DomainActivityChart data={domainStats} />
+            </div>
           </div>
         )}
 
@@ -394,13 +532,16 @@ export default function DashboardPage() {
                 Diskusi Berlangsung
               </h2>
               <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-slate-400 font-medium">
-                {activeSessions.length} Total Sesi
+                {isDemoMode
+                  ? DEMO_SESSIONS.filter((s) => s.status === "active").length
+                  : activeSessions.length}{" "}
+                Total Sesi
               </span>
             </div>
 
             {/* Domain Filter Tabs (Mobile-Friendly Horizontal Scroll) */}
             {activeSessions.length > 0 && (
-              <div className="mb-4 flex items-center gap-1.5 flex-wrap pb-2">
+              <div className="mb-4 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 mask-fade-right">
                 <button
                   onClick={() => setSelectedDomainFilter("all")}
                   className={`shrink-0 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
@@ -431,8 +572,14 @@ export default function DashboardPage() {
 
             {/* Sessions Cards Container */}
             <div className="space-y-3.5">
-              {filteredActiveSessions.length ? (
-                filteredActiveSessions.map((session) => (
+              {(isDemoMode
+                ? DEMO_SESSIONS.filter((s) => s.status === "active")
+                : filteredActiveSessions
+              ).length ? (
+                (isDemoMode
+                  ? DEMO_SESSIONS.filter((s) => s.status === "active")
+                  : filteredActiveSessions
+                ).map((session) => (
                   <div
                     key={session.id}
                     onClick={() => navigate(`/chat?session=${session.id}`)}
@@ -444,7 +591,7 @@ export default function DashboardPage() {
                           {domainIcons[session.domain]}
                         </span>
                         <span
-                          className={`inline-block rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest border ${domainBadgeStyles[session.domain]}`}
+                          className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-widest border ${domainBadgeStyles[session.domain]}`}
                         >
                           {domainLabels[session.domain]}
                         </span>
@@ -550,13 +697,13 @@ export default function DashboardPage() {
                 Decision Journal
               </h2>
               <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-slate-400 font-medium">
-                {decisions.length} Total
+                {isDemoMode ? DEMO_DECISIONS.length : decisions.length} Total
               </span>
             </div>
 
             <div className="space-y-3.5">
-              {recentDecisions.length ? (
-                recentDecisions.map((decision) => (
+              {(isDemoMode ? DEMO_DECISIONS.slice(0, 4) : recentDecisions).length ? (
+                (isDemoMode ? DEMO_DECISIONS.slice(0, 4) : recentDecisions).map((decision) => (
                   <article
                     key={decision.id}
                     className="rounded-2xl border border-white/5 bg-gradient-to-br from-white/[0.015] to-transparent p-5 sm:p-6 shadow-sm hover:border-blue/20 transition-all duration-300"
@@ -567,7 +714,9 @@ export default function DashboardPage() {
                         Keputusan Final
                       </span>
                       <span className="text-[9px] text-slate-500">
-                        {formatTimestamp(decision.confirmedAt)}
+                        {decision.confirmedAt
+                          ? formatTimestamp(decision.confirmedAt)
+                          : "Baru saja"}
                       </span>
                     </div>
                     <h3 className="font-bold leading-relaxed text-slate-100 text-xs sm:text-sm tracking-tight">
@@ -591,6 +740,19 @@ export default function DashboardPage() {
                 />
               )}
             </div>
+
+            {/* Activity Timeline - NEW */}
+            {activityEvents.length > 0 && (
+              <div className="mt-6">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
+                  <ClockIcon className="h-4 w-4 text-indigo-400" />
+                  Recent Activity
+                </h3>
+                <div className="rounded-2xl border border-white/5 bg-white/[0.015] p-5 backdrop-blur-sm">
+                  <ActivityTimeline events={activityEvents} />
+                </div>
+              </div>
+            )}
           </section>
         </div>
       </section>
@@ -619,9 +781,9 @@ export default function DashboardPage() {
 
             <div className="mt-4 rounded-xl border border-white/5 bg-white/5 p-3.5">
               <div className="flex items-center gap-1.5 mb-1.5">
-                <span className="text-xs">{domainIcons[sessionToDelete.domain]}</span>
+                <span className="text-xs">{domainIcons[sessionToDelete.domain as DecisionDomain]}</span>
                 <span className="text-[10px] font-bold uppercase text-slate-400">
-                  {domainLabels[sessionToDelete.domain]}
+                  {domainLabels[sessionToDelete.domain as DecisionDomain]}
                 </span>
               </div>
               <p className="text-xs text-slate-200 line-clamp-2 italic">

@@ -70,7 +70,7 @@ export default function AuthPage() {
         <div className="w-full max-w-md">
           <Link to="/" className="mb-12 flex items-center gap-2.5 lg:hidden"><Brand /></Link>
           <p className="text-sm font-semibold text-teal-300">{mode === 'login' ? 'SELAMAT DATANG KEMBALI' : 'BUAT AKUN BARU'}</p>
-          <h2 className="mt-2 text-3xl font-bold text-white">{mode === 'login' ? 'Masuk ke ruang berpikirmu' : 'Mulai ruang berpikirmu'}</h2>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-bold text-white">{mode === 'login' ? 'Masuk ke ruang berpikirmu' : 'Mulai ruang berpikirmu'}</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-400">{mode === 'login' ? 'Masuk untuk melanjutkan diskusi dan melihat keputusanmu.' : 'Daftar untuk menyimpan konteks dan keputusanmu secara pribadi.'}</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -108,5 +108,5 @@ export default function AuthPage() {
 }
 
 function Brand() {
-  return <><span className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"><img src="/logo.png" alt="Guido.AI Logo" className="w-10 h-10 object-contain" /></span><span className="text-2xl font-extrabold tracking-tight text-white">Guido<span className="text-teal-300">.AI</span></span></>;
+  return <><span className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden"><img src="/logo.png" alt="Guido.AI Logo" className="w-10 h-10 object-contain" /></span><span className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">Guido<span className="text-teal-300">.AI</span></span></>;
 }

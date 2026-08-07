@@ -24,7 +24,7 @@ export default function LandingPage() {
               <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
                 <img src="/logo.png" alt="Guido.AI Logo" className="w-10 h-10 object-contain" />
               </div>
-              <span className="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+              <span className="text-xl sm:text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
                 Guido.AI
               </span>
             </div>
@@ -92,17 +92,17 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/20 to-blue-500/20 rounded-3xl blur-3xl transform scale-95 -rotate-2" />
             
             {/* Main Mockup Card */}
-            <div className="relative border border-white/10 rounded-2xl bg-[#0d1321]/90 backdrop-blur-xl shadow-2xl overflow-hidden p-6">
+            <div className="relative border border-white/10 rounded-2xl bg-[#0d1321]/90 backdrop-blur-xl shadow-2xl overflow-hidden p-4 sm:p-6">
               {/* Mockup Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/5 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
                   <div>
-                    <h4 className="text-xs font-bold text-white tracking-wide">Guido.AI Partner</h4>
-                    <p className="text-[10px] text-slate-400">Analisis Domain: Karier</p>
+                    <h4 className="text-[11px] sm:text-xs font-bold text-white tracking-wide">Guido.AI Partner</h4>
+                    <p className="text-[10px] sm:text-xs text-slate-400">Analisis Domain: Karier</p>
                   </div>
                 </div>
-                <span className="text-[10px] bg-teal/10 text-teal-300 border border-teal-500/20 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] sm:text-xs bg-teal/10 text-teal-300 border border-teal-500/20 px-2 py-0.5 rounded-full">
                   Sesi Aktif
                 </span>
               </div>
@@ -110,17 +110,17 @@ export default function LandingPage() {
               {/* Mockup Chat Bubble */}
               <div className="space-y-4">
                 <div className="flex gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-teal to-blue flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-white">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-teal to-blue flex items-center justify-center flex-shrink-0 text-[10px] sm:text-xs font-bold text-white">
                     M
                   </div>
-                  <div className="bg-white/5 rounded-xl p-3 border border-white/5 text-[11px] text-slate-200 max-w-[85%] leading-relaxed">
+                  <div className="bg-white/5 rounded-xl p-3 border border-white/5 text-[11px] sm:text-xs text-slate-200 max-w-[85%] leading-relaxed">
                     Bagaimana jika kita bandingkan konsekuensi jangka panjangnya? Mari kita petakan alternatif Anda:
                   </div>
                 </div>
 
                 {/* Alternative Comparison Visual */}
                 <div className="ml-8 p-3 bg-white/5 rounded-xl border border-white/5 space-y-3">
-                  <div className="flex justify-between items-center text-[10px]">
+                  <div className="flex justify-between items-center text-[10px] sm:text-xs">
                     <span className="text-slate-300 font-semibold">Opsi A: Pindah Kerja ke Startup</span>
                     <span className="text-teal-400 font-bold">Skor: 8.2</span>
                   </div>
@@ -128,7 +128,7 @@ export default function LandingPage() {
                     <div className="bg-teal h-full rounded-full" style={{ width: '82%' }} />
                   </div>
 
-                  <div className="flex justify-between items-center text-[10px]">
+                  <div className="flex justify-between items-center text-[10px] sm:text-xs">
                     <span className="text-slate-300 font-semibold">Opsi B: Bertahan di Perusahaan Sekarang</span>
                     <span className="text-blue font-bold">Skor: 6.8</span>
                   </div>
@@ -139,8 +139,8 @@ export default function LandingPage() {
 
                 {/* Explainability Popup Mockup */}
                 <div className="ml-8 border-l-2 border-teal pl-3 py-1 space-y-1 bg-teal/5 rounded-r-lg pr-2">
-                  <p className="text-[9px] font-bold text-teal-400 uppercase tracking-wider">💡 Insight Logika</p>
-                  <p className="text-[10px] text-slate-300 italic">
+                  <p className="text-[9px] sm:text-[10px] font-bold text-teal-400 uppercase tracking-wider">💡 Insight Logika</p>
+                  <p className="text-[10px] sm:text-xs text-slate-300 italic">
                     "Opsi A memiliki potensi pengembangan skill lebih tinggi 35%, namun memiliki risiko stabilitas pendapatan yang perlu dimitigasi."
                   </p>
                 </div>
@@ -148,7 +148,7 @@ export default function LandingPage() {
 
               {/* Mockup Input Box */}
               <div className="mt-5 pt-3 border-t border-white/5 flex gap-2">
-                <div className="bg-white/5 rounded-lg px-3 py-2 text-[10px] text-slate-400 flex-1 border border-white/5">
+                <div className="bg-white/5 rounded-lg px-3 py-2 text-[10px] sm:text-xs text-slate-400 flex-1 border border-white/5">
                   Ketik tanggapan Anda...
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-teal flex items-center justify-center text-white flex-shrink-0">
@@ -160,15 +160,15 @@ export default function LandingPage() {
             </div>
 
             {/* Floating badges surrounding the mockup */}
-            <div className="absolute -top-6 -left-6 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg flex items-center gap-2 animate-bounce duration-1000">
+            <div className="absolute -top-6 -left-6 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg hidden sm:flex items-center gap-2 animate-bounce duration-1000">
               <span className="text-sm">💼</span>
               <span className="text-[10px] font-bold text-slate-200">Karier</span>
             </div>
-            <div className="absolute -bottom-4 -right-4 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg flex items-center gap-2 animate-pulse">
+            <div className="absolute -bottom-4 -right-4 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg hidden sm:flex items-center gap-2 animate-pulse">
               <span className="text-sm">💰</span>
               <span className="text-[10px] font-bold text-slate-200">Finansial</span>
             </div>
-            <div className="absolute top-1/2 -right-8 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg items-center gap-2 hidden sm:flex">
+            <div className="absolute top-1/2 -right-8 bg-slate-900 border border-white/10 rounded-xl px-3 py-2 shadow-lg items-center gap-2 hidden lg:flex">
               <span className="text-sm">🎓</span>
               <span className="text-[10px] font-bold text-slate-200">Pendidikan</span>
             </div>
@@ -321,7 +321,7 @@ function StepCard({ number, title, description }: StepCardProps) {
         {number}
       </div>
       <div>
-        <h4 className="text-xl font-bold text-white mb-3">{title}</h4>
+        <h4 className="text-lg sm:text-xl font-bold text-white mb-3">{title}</h4>
         <p className="text-slate-400 text-sm sm:text-base leading-relaxed">{description}</p>
       </div>
     </div>

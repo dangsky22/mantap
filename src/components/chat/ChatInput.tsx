@@ -35,14 +35,14 @@ export function ChatInput({ onSend, onStop, isTyping, disabled = false, placehol
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
           disabled={disabled}
-          className="min-h-[48px] sm:min-h-[60px] max-h-[150px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 disabled:bg-white/5"
+          className="min-h-[48px] sm:min-h-[60px] max-h-[150px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 disabled:bg-white/5 transition-all duration-200"
           rows={2}
         />
-        {isTyping ? ( // ⬅️ tambahan: tombol stop menggantikan tombol kirim saat AI lagi proses
+        {isTyping ? (
           <button
             type="button"
             onClick={onStop}
-            className="flex-shrink-0 rounded-xl bg-white/10 border border-white/10 p-3 text-white transition hover:bg-white/20"
+            className="flex-shrink-0 rounded-xl bg-red-500/20 border border-red-500/30 p-3 text-red-300 transition-all hover:bg-red-500/30 hover:scale-105 active:scale-95"
             aria-label="Hentikan respons"
           >
             <StopIcon className="w-6 h-6" />
@@ -51,7 +51,7 @@ export function ChatInput({ onSend, onStop, isTyping, disabled = false, placehol
         <button
           onClick={handleSend}
           disabled={!message.trim() || disabled}
-          className="flex-shrink-0 rounded-xl bg-gradient-to-br from-teal to-blue p-3 text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex-shrink-0 rounded-xl bg-gradient-to-br from-teal to-blue p-3 text-white transition-all hover:brightness-110 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 shadow-lg shadow-teal-500/20"
         >
           <PaperAirplaneIcon className="w-6 h-6" />
         </button>
